@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+// Note: Notifiable is used later (Phase 10) for the in-app notification system.
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -22,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -45,5 +45,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * A user (farmer or admin) has exactly one profile record
+     * holding phone, address, district, profession, and photo.
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    // Relationships to Crop, Task (reminders), Question, Feedback, etc.
+    // will be added here in their respective phases as those models are created.
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isFarmer(): bool
+    {
+        return $this->role === 'farmer';
     }
 }

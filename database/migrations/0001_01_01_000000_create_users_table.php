@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * We added a `role` column so every account is tagged as either
+     * a 'farmer' or an 'admin' right from registration.
      */
     public function up(): void
     {
@@ -17,6 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // Krishi Bondhu user role: farmer (default) or admin
+            $table->enum('role', ['farmer', 'admin'])->default('farmer');
             $table->rememberToken();
             $table->timestamps();
         });
