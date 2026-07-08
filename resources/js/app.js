@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
     revealTargets.forEach((el) => {
         revealObserver.observe(el);
     });
-    
+
     /*
        Back-to-top button
      */
@@ -257,6 +257,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
         backToTopBtn.addEventListener("click", function () {
             window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+});
+/*
+   PHASE 4 ADDITIONS 
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Live crop photo preview on the Add/Edit Crop forms
+     */
+    const cropImageInput = document.getElementById("image");
+    const cropImagePreview = document.getElementById("cropImagePreview");
+    const cropImagePlaceholder = document.getElementById(
+        "cropImagePlaceholder",
+    );
+
+    if (cropImageInput && cropImagePreview && cropImagePlaceholder) {
+        cropImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                cropImagePreview.src = readerEvent.target.result;
+                cropImagePreview.classList.remove("hidden");
+                cropImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Shared "Delete Crop" confirmation modal.
+       Any button with [data-open-delete-modal] + [data-delete-url]
+       opens #deleteCropModal and points its form at that crop's URL.
+     */
+    const deleteCropModal = document.getElementById("deleteCropModal");
+    const deleteCropForm = document.getElementById("deleteCropForm");
+    const cancelDeleteCropBtn = document.getElementById("cancelDeleteCrop");
+
+    if (deleteCropModal && deleteCropForm) {
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteCropForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteCropModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteCropBtn) {
+            cancelDeleteCropBtn.addEventListener("click", function () {
+                deleteCropModal.classList.add("hidden");
+            });
+        }
+
+        deleteCropModal.addEventListener("click", function (event) {
+            if (event.target === deleteCropModal) {
+                deleteCropModal.classList.add("hidden");
+            }
         });
     }
 });

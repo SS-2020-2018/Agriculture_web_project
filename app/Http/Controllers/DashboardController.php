@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Crop;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    
+    /**
+     * Display the Farmer Dashboard — a personalized welcome message plus
+     * a grid of clickable module cards. Each card's summary is wired to
+     * a placeholder value for now; the TODO comments mark exactly which
+     * future phase replaces that value with a real Eloquent query.
+     */
     public function index(Request $request): View
     {
         $user = $request->user();
 
-        // TODO (Phase 4): Crop::where('user_id', $user->id)->count();
-        $cropCount = 0;
-        // TODO (Phase 4): Crop::where('user_id', $user->id)->where('status', 'ready_for_harvest')->count();
-        $cropsReadyCount = 0;
+        // Phase 4: now wired to real data.
+        $cropCount = Crop::where('user_id', $user->id)->count();
+        $cropsReadyCount = Crop::where('user_id', $user->id)->where('status', 'ready_for_harvest')->count();
+
         // TODO (Phase 5): Task::where('user_id', $user->id)->whereDate('reminder_date', today())->count();
         $todaysReminderCount = 0;
         // TODO (Phase 6): Disease::count(), or a farmer-relevant subset if you add crop targeting later.
