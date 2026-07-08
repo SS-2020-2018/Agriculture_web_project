@@ -1277,3 +1277,155 @@ img {
         grid-template-columns: 1fr;
     }
 }
+/* 
+   PHASE 3 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+*/
+
+/* 
+   Dashboard — Welcome panel
+    */
+
+.dashboard-welcome {
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-secondary));
+    border-radius: var(--radius-lg);
+    padding: 36px 40px;
+    color: #fff;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md);
+}
+
+.dashboard-welcome h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+}
+
+.dashboard-welcome p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* 
+   Dashboard — Module card grid
+ */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 22px;
+}
+
+.dashboard-card {
+    display: block;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    padding: 28px 26px;
+    box-shadow: var(--shadow-sm);
+    border-top: 4px solid transparent;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    opacity: 0;
+    animation: dashCardIn 0.5s ease forwards;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-card h3 {
+    margin: 4px 0 6px;
+    color: var(--color-text);
+}
+
+.dashboard-card p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--color-text-light);
+}
+
+.dashboard-card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 14px;
+    transition: var(--transition);
+}
+
+.dashboard-card:hover .dashboard-card-icon {
+    transform: scale(1.1) rotate(-4deg);
+}
+
+@keyframes dashCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Color variants — top border + tinted icon badge background */
+.dash-color-blue    { border-top-color: #1976d2; }
+.dash-color-blue    .dashboard-card-icon { background: #e3f2fd; }
+
+.dash-color-green   { border-top-color: #2e7d32; }
+.dash-color-green   .dashboard-card-icon { background: #e8f5e9; }
+
+.dash-color-yellow  { border-top-color: #f9a825; }
+.dash-color-yellow  .dashboard-card-icon { background: #fff8e1; }
+
+.dash-color-red     { border-top-color: #e53935; }
+.dash-color-red     .dashboard-card-icon { background: #ffebee; }
+
+.dash-color-indigo  { border-top-color: #3949ab; }
+.dash-color-indigo  .dashboard-card-icon { background: #e8eaf6; }
+
+.dash-color-orange  { border-top-color: #ef6c00; }
+.dash-color-orange  .dashboard-card-icon { background: #fff3e0; }
+
+.dash-color-teal    { border-top-color: #00897b; }
+.dash-color-teal    .dashboard-card-icon { background: #e0f2f1; }
+
+.dash-color-cyan    { border-top-color: #0097a7; }
+.dash-color-cyan    .dashboard-card-icon { background: #e0f7fa; }
+
+.dash-color-pink    { border-top-color: #d81b60; }
+.dash-color-pink    .dashboard-card-icon { background: #fce4ec; }
+
+.dash-color-purple  { border-top-color: #7b1fa2; }
+.dash-color-purple  .dashboard-card-icon { background: #f3e5f5; }
+
+/* 
+   "Coming Soon" placeholder module page
+    */
+
+.coming-soon-panel {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 60px 40px;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.coming-soon-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+}
+
+.coming-soon-panel h1 {
+    color: var(--color-primary-dark);
+    margin: 0 0 12px;
+}
+
+.coming-soon-panel p {
+    color: var(--color-text-light);
+    margin: 0 0 24px;
+}
