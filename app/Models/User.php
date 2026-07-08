@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// Note: Notifiable is used later (Phase 10) for the in-app notification system.
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,20 +23,18 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+    /*
+      The attributes that should be hidden for serialization.
+      @var list<string>
      */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+    /*
+     Get the attributes that should be cast.
+     @return array<string, string>
      */
     protected function casts(): array
     {
@@ -47,16 +44,24 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * A user (farmer or admin) has exactly one profile record
-     * holding phone, address, district, profession, and photo.
+    /*
+     A user (farmer or admin) has exactly one profile record
+     holding phone, address, district, profession, and photo.
      */
     public function profile()
     {
         return $this->hasOne(Profile::class);
     }
 
-    // Relationships to Crop, Task (reminders), Question, Feedback, etc.
+    /*
+      All crops registered by this farmer.
+     */
+    public function crops()
+    {
+        return $this->hasMany(Crop::class);
+    }
+
+    // Relationships to Task (reminders), Question, Feedback, etc.
     // will be added here in their respective phases as those models are created.
 
     public function isAdmin(): bool
