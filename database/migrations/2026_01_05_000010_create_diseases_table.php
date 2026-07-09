@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * created_at doubles as "publication date" and updated_at as
-     * "last updated date" per the spec — no need for separate columns.
-     */
+    /*
+     created_at doubles as "publication date" and updated_at as
+     "last updated date" per the spec — no need for separate columns.
+    */
     public function up(): void
     {
         Schema::create('diseases', function (Blueprint $table) {
