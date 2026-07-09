@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Crop;
+use App\Models\Disease;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    /*
-      Display the Farmer Dashboard — a personalized welcome message plus
-      a grid of clickable module cards. Each card's summary is wired to
-     a placeholder value for now; the TODO comments mark exactly which
-     future phase replaces that value with a real Eloquent query.
+    /**
+     * Display the Farmer Dashboard — a personalized welcome message plus
+     * a grid of clickable module cards. Each card's summary is wired to
+     * a placeholder value for now; the TODO comments mark exactly which
+     * future phase replaces that value with a real Eloquent query.
      */
     public function index(Request $request): View
     {
@@ -26,8 +27,9 @@ class DashboardController extends Controller
         // Phase 5: wired to real data.
         $todaysReminderCount = Task::where('user_id', $user->id)->whereDate('reminder_date', today())->count();
 
-        // TODO (Phase 6): Disease::count(), or a farmer-relevant subset if you add crop targeting later.
-        $activeDiseaseAlerts = 0;
+        // Phase 6: wired to real data.
+        $activeDiseaseAlerts = Disease::count();
+
         // TODO (Phase 11): News::latest()->count(), or count published this week.
         $newsCount = 0;
         // TODO (Phase 11): the most recently published News record's title.
@@ -68,7 +70,7 @@ class DashboardController extends Controller
                 'key' => 'diseases',
                 'icon' => '🚨',
                 'title' => 'Disease Alerts',
-                'summary' => "{$activeDiseaseAlerts} active disease alerts published",
+                'summary' => "{$activeDiseaseAlerts} disease alerts published",
                 'color' => 'red',
                 'route' => 'diseases.index',
             ],
