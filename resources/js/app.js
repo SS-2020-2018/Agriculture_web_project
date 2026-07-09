@@ -326,3 +326,261 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+/* 
+   PHASE 5 ADDITIONS 
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const reminderForm = document.getElementById("reminderForm");
+
+    // Everything below only applies on the Reminder Calendar page.
+    if (!reminderForm) {
+        return;
+    }
+
+    const reminderFormCard = document.getElementById("reminderFormCard");
+    const reminderFormTitle = document.getElementById("reminderFormTitle");
+    const reminderFormMethod = document.getElementById("reminderFormMethod");
+    const reminderTaskId = document.getElementById("reminderTaskId");
+    const reminderSubmitBtn = document.getElementById("reminderSubmitBtn");
+    const cancelEditBtn = document.getElementById("cancelEditReminder");
+    const titleInput = document.getElementById("title");
+    const dateInput = document.getElementById("reminder_date");
+    const notesInput = document.getElementById("notes");
+
+    /*
+       Enter / exit "Edit Reminder" mode in the sidebar form
+     */
+    function enterEditMode(id, title, date, notes, updateUrl) {
+        reminderTaskId.value = id;
+        titleInput.value = title;
+        dateInput.value = date;
+        notesInput.value = notes || "";
+
+        reminderForm.setAttribute("action", updateUrl);
+        reminderFormMethod.value = "PUT";
+        reminderFormTitle.textContent = "Edit Reminder";
+        reminderSubmitBtn.textContent = "Save Changes";
+        cancelEditBtn.classList.remove("hidden");
+
+        reminderFormCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function exitEditMode() {
+        reminderTaskId.value = "";
+        titleInput.value = "";
+        dateInput.value = "";
+        notesInput.value = "";
+
+        reminderForm.setAttribute("action", reminderForm.dataset.storeUrl);
+        reminderFormMethod.value = "POST";
+        reminderFormTitle.textContent = "Add Reminder";
+        reminderSubmitBtn.textContent = "Add Reminder";
+        cancelEditBtn.classList.add("hidden");
+    }
+
+    document.querySelectorAll(".reminder-edit-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            enterEditMode(
+                btn.dataset.id,
+                btn.dataset.title,
+                btn.dataset.date,
+                btn.dataset.notes,
+                btn.dataset.updateUrl,
+            );
+        });
+    });
+
+    cancelEditBtn.addEventListener("click", exitEditMode);
+
+    // If the page reloaded after a validation error while editing, re-open
+    // that same reminder's edit form so the error messages make sense.
+    if (window.reopenEditReminderId) {
+        const targetBtn = document.querySelector(
+            '.reminder-edit-btn[data-id="' + window.reopenEditReminderId + '"]',
+        );
+        if (targetBtn) {
+            enterEditMode(
+                targetBtn.dataset.id,
+                targetBtn.dataset.title,
+                targetBtn.dataset.date,
+                targetBtn.dataset.notes,
+                targetBtn.dataset.updateUrl,
+            );
+        }
+    }
+
+    /*
+       AJAX checkbox toggle — flips completed/pending instantly,
+       no page reload, and refreshes the summary stat boxes.
+     */
+    function updateReminderStats(stats) {
+        const totalEl = document.getElementById("reminderStatTotal");
+        const pendingEl = document.getElementById("reminderStatPending");
+        const completedEl = document.getElementById("reminderStatCompleted");
+        const todayEl = document.getElementById("reminderStatToday");
+
+        if (totalEl) totalEl.textContent = stats.total;
+        if (pendingEl) pendingEl.textContent = stats.pending;
+        if (completedEl) completedEl.textContent = stats.completed;
+        if (todayEl) todayEl.textContent = stats.today;
+    }
+
+    document
+        .querySelectorAll(".reminder-checkbox")
+        .forEach(function (checkbox) {
+            checkbox.addEventListener("change", function () {
+                const url = checkbox.dataset.toggleUrl;
+                const reminderItem = checkbox.closest(".reminder-item");
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content");
+
+                fetch(url, {
+                    method: "PATCH",
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken,
+                        Accept: "application/json",
+                    },
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error("Request failed");
+                        }
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        reminderItem.classList.toggle(
+                            "reminder-completed",
+                            data.is_completed,
+                        );
+                        reminderItem.dataset.status = data.is_completed
+                            ? "completed"
+                            : "pending";
+                        updateReminderStats(data.stats);
+                        applyReminderFilters();
+                    })
+                    .catch(function () {
+                        // Revert the checkbox visually since the update failed.
+                        checkbox.checked = !checkbox.checked;
+                        alert(
+                            "Could not update this reminder. Please try again.",
+                        );
+                    });
+            });
+        });
+
+    /*
+       Search + status filter (client-side, instant)
+     */
+    const searchInput = document.getElementById("reminderSearch");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const noMatchesState = document.getElementById("reminderNoMatches");
+    let currentFilter = "all";
+
+    function applyReminderFilters() {
+        const query = (searchInput ? searchInput.value : "")
+            .toLowerCase()
+            .trim();
+        const items = document.querySelectorAll(".reminder-item");
+        let visibleCount = 0;
+
+        items.forEach(function (item) {
+            const matchesSearch = item.dataset.title.includes(query);
+            const matchesFilter =
+                currentFilter === "all" ||
+                item.dataset.status === currentFilter;
+            const shouldShow = matchesSearch && matchesFilter;
+
+            item.style.display = shouldShow ? "" : "none";
+            if (shouldShow) {
+                visibleCount++;
+            }
+        });
+
+        if (noMatchesState) {
+            noMatchesState.classList.toggle(
+                "hidden",
+                visibleCount !== 0 || items.length === 0,
+            );
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", applyReminderFilters);
+    }
+
+    filterButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            filterButtons.forEach(function (b) {
+                b.classList.remove("active");
+            });
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            applyReminderFilters();
+        });
+    });
+
+    /*
+       Sort toggle — Newest first / Oldest first
+     */
+    const sortToggleBtn = document.getElementById("reminderSortToggle");
+    let newestFirst = true;
+
+    if (sortToggleBtn) {
+        sortToggleBtn.addEventListener("click", function () {
+            const list = document.getElementById("reminderList");
+            const items = Array.from(list.querySelectorAll(".reminder-item"));
+
+            items.sort(function (a, b) {
+                const dateA = new Date(a.dataset.date);
+                const dateB = new Date(b.dataset.date);
+                return newestFirst ? dateB - dateA : dateA - dateB;
+            });
+
+            items.forEach(function (item) {
+                list.appendChild(item);
+            });
+
+            newestFirst = !newestFirst;
+            sortToggleBtn.textContent = newestFirst
+                ? "Sort: Newest First ⬍"
+                : "Sort: Oldest First ⬍";
+        });
+    }
+
+    /*
+       Delete confirmation modal (reminders)
+     */
+    const deleteReminderModal = document.getElementById("deleteReminderModal");
+    const deleteReminderForm = document.getElementById("deleteReminderForm");
+    const cancelDeleteReminderBtn = document.getElementById(
+        "cancelDeleteReminder",
+    );
+
+    if (deleteReminderModal && deleteReminderForm) {
+        document
+            .querySelectorAll(".reminder-delete-btn")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteReminderForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteReminderModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteReminderBtn) {
+            cancelDeleteReminderBtn.addEventListener("click", function () {
+                deleteReminderModal.classList.add("hidden");
+            });
+        }
+
+        deleteReminderModal.addEventListener("click", function (event) {
+            if (event.target === deleteReminderModal) {
+                deleteReminderModal.classList.add("hidden");
+            }
+        });
+    }
+});
