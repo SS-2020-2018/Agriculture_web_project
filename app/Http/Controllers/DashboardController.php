@@ -5,16 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Crop;
 use App\Models\Disease;
 use App\Models\Task;
+use App\Services\WeatherService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the Farmer Dashboard — a personalized welcome message plus
-     * a grid of clickable module cards. Each card's summary is wired to
-     * a placeholder value for now; the TODO comments mark exactly which
-     * future phase replaces that value with a real Eloquent query.
+    public function __construct(private readonly WeatherService $weatherService)
+    {
+    }
+
+    /*
+     Display the Farmer Dashboard — a personalized welcome message plus
+     a grid of clickable module cards. Each card's summary is wired to
+     a placeholder value for now; the TODO comments mark exactly which
+     future phase replaces that value with a real Eloquent query.
      */
     public function index(Request $request): View
     {
@@ -30,6 +36,24 @@ class DashboardController extends Controller
         // Phase 6: wired to real data.
         $activeDiseaseAlerts = Disease::count();
 
+        // Phase 7: wired to real data, cached for 30 minutes so the
+        // dashboard doesn't hit the weather API on every single page load.
+        $weatherSummary = Cache::remember('dashboard-weather-summary', now()->addMinutes(10), function () {
+            $location = $this->weatherService->detectLocationFromIp();
+
+            if (! $location) {
+                return null;
+            }
+
+            $weather = $this->weatherService->getCurrentWeather($location['lat'], $location['lon']);
+
+            if (! $weather) {
+                return null;
+            }
+
+            return "{$weather['temp']}°C, {$weather['condition']} in {$weather['city']}";
+        });
+
         // TODO (Phase 11): News::latest()->count(), or count published this week.
         $newsCount = 0;
         // TODO (Phase 11): the most recently published News record's title.
@@ -44,8 +68,7 @@ class DashboardController extends Controller
                 'key' => 'weather',
                 'icon' => '⛅',
                 'title' => 'Weather',
-                // TODO (Phase 7): swap for a live one-line forecast, e.g. "28°C, Partly Cloudy in {city}".
-                'summary' => 'Tap to see today\'s forecast for your location.',
+                'summary' => $weatherSummary ?? 'Tap to see today\'s forecast for your location.',
                 'color' => 'blue',
                 'route' => 'weather.index',
             ],
