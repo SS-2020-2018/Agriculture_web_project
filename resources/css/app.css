@@ -1287,7 +1287,11 @@ img {
     */
 
 .dashboard-welcome {
-    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-secondary));
+    background: linear-gradient(
+        135deg,
+        var(--color-primary-dark),
+        var(--color-secondary)
+    );
     border-radius: var(--radius-lg);
     padding: 36px 40px;
     color: #fff;
@@ -1322,7 +1326,9 @@ img {
     padding: 28px 26px;
     box-shadow: var(--shadow-sm);
     border-top: 4px solid transparent;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
     opacity: 0;
     animation: dashCardIn 0.5s ease forwards;
 }
@@ -1371,35 +1377,75 @@ img {
 }
 
 /* Color variants — top border + tinted icon badge background */
-.dash-color-blue    { border-top-color: #1976d2; }
-.dash-color-blue    .dashboard-card-icon { background: #e3f2fd; }
+.dash-color-blue {
+    border-top-color: #1976d2;
+}
+.dash-color-blue .dashboard-card-icon {
+    background: #e3f2fd;
+}
 
-.dash-color-green   { border-top-color: #2e7d32; }
-.dash-color-green   .dashboard-card-icon { background: #e8f5e9; }
+.dash-color-green {
+    border-top-color: #2e7d32;
+}
+.dash-color-green .dashboard-card-icon {
+    background: #e8f5e9;
+}
 
-.dash-color-yellow  { border-top-color: #f9a825; }
-.dash-color-yellow  .dashboard-card-icon { background: #fff8e1; }
+.dash-color-yellow {
+    border-top-color: #f9a825;
+}
+.dash-color-yellow .dashboard-card-icon {
+    background: #fff8e1;
+}
 
-.dash-color-red     { border-top-color: #e53935; }
-.dash-color-red     .dashboard-card-icon { background: #ffebee; }
+.dash-color-red {
+    border-top-color: #e53935;
+}
+.dash-color-red .dashboard-card-icon {
+    background: #ffebee;
+}
 
-.dash-color-indigo  { border-top-color: #3949ab; }
-.dash-color-indigo  .dashboard-card-icon { background: #e8eaf6; }
+.dash-color-indigo {
+    border-top-color: #3949ab;
+}
+.dash-color-indigo .dashboard-card-icon {
+    background: #e8eaf6;
+}
 
-.dash-color-orange  { border-top-color: #ef6c00; }
-.dash-color-orange  .dashboard-card-icon { background: #fff3e0; }
+.dash-color-orange {
+    border-top-color: #ef6c00;
+}
+.dash-color-orange .dashboard-card-icon {
+    background: #fff3e0;
+}
 
-.dash-color-teal    { border-top-color: #00897b; }
-.dash-color-teal    .dashboard-card-icon { background: #e0f2f1; }
+.dash-color-teal {
+    border-top-color: #00897b;
+}
+.dash-color-teal .dashboard-card-icon {
+    background: #e0f2f1;
+}
 
-.dash-color-cyan    { border-top-color: #0097a7; }
-.dash-color-cyan    .dashboard-card-icon { background: #e0f7fa; }
+.dash-color-cyan {
+    border-top-color: #0097a7;
+}
+.dash-color-cyan .dashboard-card-icon {
+    background: #e0f7fa;
+}
 
-.dash-color-pink    { border-top-color: #d81b60; }
-.dash-color-pink    .dashboard-card-icon { background: #fce4ec; }
+.dash-color-pink {
+    border-top-color: #d81b60;
+}
+.dash-color-pink .dashboard-card-icon {
+    background: #fce4ec;
+}
 
-.dash-color-purple  { border-top-color: #7b1fa2; }
-.dash-color-purple  .dashboard-card-icon { background: #f3e5f5; }
+.dash-color-purple {
+    border-top-color: #7b1fa2;
+}
+.dash-color-purple .dashboard-card-icon {
+    background: #f3e5f5;
+}
 
 /* 
    "Coming Soon" placeholder module page
@@ -1528,9 +1574,15 @@ img {
     margin-top: 4px;
 }
 
-.crop-stat-green { border-left-color: #2e7d32; }
-.crop-stat-orange { border-left-color: #ef6c00; }
-.crop-stat-blue { border-left-color: #1976d2; }
+.crop-stat-green {
+    border-left-color: #2e7d32;
+}
+.crop-stat-orange {
+    border-left-color: #ef6c00;
+}
+.crop-stat-blue {
+    border-left-color: #1976d2;
+}
 
 /*
    Crop list header + empty state
@@ -1616,9 +1668,15 @@ img {
     color: #fff;
 }
 
-.crop-status-green { background: #2e7d32; }
-.crop-status-orange { background: #ef6c00; }
-.crop-status-gray { background: #607d8b; }
+.crop-status-green {
+    background: #2e7d32;
+}
+.crop-status-orange {
+    background: #ef6c00;
+}
+.crop-status-gray {
+    background: #607d8b;
+}
 
 .crop-card-body {
     padding: 20px;
@@ -1814,9 +1872,15 @@ img {
     margin-top: 4px;
 }
 
-.reminder-stat-orange { border-left-color: #ef6c00; }
-.reminder-stat-green { border-left-color: #2e7d32; }
-.reminder-stat-indigo { border-left-color: #3949ab; }
+.reminder-stat-orange {
+    border-left-color: #ef6c00;
+}
+.reminder-stat-green {
+    border-left-color: #2e7d32;
+}
+.reminder-stat-indigo {
+    border-left-color: #3949ab;
+}
 
 /*
    Two-column layout
@@ -1980,7 +2044,7 @@ img {
 }
 
 .reminder-checkmark::after {
-    content: '';
+    content: "";
     position: absolute;
     display: none;
     left: 8px;
@@ -2046,9 +2110,16 @@ img {
     letter-spacing: 0.03em;
 }
 
-.reminder-tag-today { background: #3949ab; }
-.reminder-tag-overdue { background: #e53935; }
-.reminder-tag-upcoming { background: #f9a825; color: #4a3200; }
+.reminder-tag-today {
+    background: #3949ab;
+}
+.reminder-tag-overdue {
+    background: #e53935;
+}
+.reminder-tag-upcoming {
+    background: #f9a825;
+    color: #4a3200;
+}
 
 .reminder-notes {
     margin: 6px 0 0;
@@ -2241,10 +2312,19 @@ img {
     color: #fff;
 }
 
-.disease-warning-green { background: #2e7d32; }
-.disease-warning-yellow { background: #f9a825; color: #4a3200; }
-.disease-warning-orange { background: #ef6c00; }
-.disease-warning-red { background: #e53935; }
+.disease-warning-green {
+    background: #2e7d32;
+}
+.disease-warning-yellow {
+    background: #f9a825;
+    color: #4a3200;
+}
+.disease-warning-orange {
+    background: #ef6c00;
+}
+.disease-warning-red {
+    background: #e53935;
+}
 
 /*
    Farmer-facing Disease Alerts — toolbar + grid
@@ -2345,4 +2425,241 @@ img {
     margin: 0;
     color: var(--color-text);
     line-height: 1.7;
+}
+
+/* ==========================================================================
+   PHASE 7 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+   No JS changes needed this phase — search and recent-search "chips"
+   are plain links/forms, no interactivity required beyond that.
+   ========================================================================== */
+
+/* ==========================================================================
+   Error alert variant (success variant already exists from Phase 1)
+   ========================================================================== */
+
+.alert-error {
+    background: #fdecea;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+/* ==========================================================================
+   Search card + recent-search chips
+   ========================================================================== */
+
+.weather-search-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+}
+
+.weather-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.weather-search-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.weather-search-input:focus {
+    outline: none;
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.15);
+}
+
+.weather-recent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.weather-recent-label {
+    font-size: 13px;
+    color: var(--color-text-light);
+    font-weight: 600;
+}
+
+.weather-chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-primary-dark);
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.weather-chip:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* ==========================================================================
+   Location heading
+   ========================================================================== */
+
+.weather-location-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.weather-location-heading h3 {
+    margin: 0;
+    color: var(--color-primary-dark);
+    font-size: 22px;
+}
+
+.weather-location-heading span {
+    font-size: 13px;
+    color: var(--color-text-light);
+}
+
+/* ==========================================================================
+   Weather card grid
+   ========================================================================== */
+
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.weather-card {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    border-top: 4px solid transparent;
+    transition: var(--transition);
+}
+
+.weather-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+.weather-card-blue {
+    border-top-color: #1976d2;
+}
+.weather-card-yellow {
+    border-top-color: #f9a825;
+}
+.weather-card-teal {
+    border-top-color: #00897b;
+}
+.weather-card-purple {
+    border-top-color: #7b1fa2;
+}
+.weather-card-orange {
+    border-top-color: #ef6c00;
+}
+.weather-card-green {
+    border-top-color: #2e7d32;
+}
+
+.weather-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.weather-card-icon {
+    font-size: 22px;
+}
+
+.weather-card-header h4 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 15px;
+}
+
+.weather-temp-big {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.weather-unit {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-light);
+}
+
+.weather-card-sub {
+    font-size: 13px;
+    color: var(--color-text-light);
+    margin: 4px 0 0;
+}
+
+.weather-minmax {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--color-text-light);
+}
+
+.weather-condition-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.weather-condition-icon {
+    width: 56px;
+    height: 56px;
+}
+
+.weather-condition-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.weather-stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.weather-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13.5px;
+    color: var(--color-text-light);
+}
+
+.weather-stat-row strong {
+    color: var(--color-text);
+}
+
+.weather-sun-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.weather-sun-row strong {
+    display: block;
+    font-size: 18px;
+    color: var(--color-text);
+    margin-top: 2px;
 }
