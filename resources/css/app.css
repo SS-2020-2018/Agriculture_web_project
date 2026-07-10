@@ -2112,3 +2112,237 @@ img {
         margin-left: 42px;
     }
 }
+/*
+   PHASE 6 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+ */
+
+/*
+   Admin navbar (lightweight — Phase 15 replaces this with a full sidebar)
+ */
+
+.admin-navbar {
+    background: #1b2a1c;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+}
+
+.admin-navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-link-admin {
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 14px;
+    color: #cfd8d0;
+    transition: var(--transition);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.nav-link-admin:hover,
+.nav-link-admin.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.admin-logout-form {
+    margin: 0;
+}
+
+/*
+   Admin data table
+ */
+
+.admin-table-wrap {
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-light);
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+}
+
+.admin-table-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/*
+   Disease warning badges (shared by admin table, farmer cards, detail page)
+ */
+
+.disease-warning-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.disease-warning-green { background: #2e7d32; }
+.disease-warning-yellow { background: #f9a825; color: #4a3200; }
+.disease-warning-orange { background: #ef6c00; }
+.disease-warning-red { background: #e53935; }
+
+/*
+   Farmer-facing Disease Alerts — toolbar + grid
+ */
+
+.disease-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.disease-filter-select {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    font-family: inherit;
+    font-size: 14px;
+    background: #fff;
+}
+
+.disease-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 22px;
+}
+
+.disease-card {
+    display: block;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.disease-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+.disease-card-image-wrap {
+    position: relative;
+    height: 170px;
+}
+
+.disease-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.disease-card-image-wrap .disease-warning-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.disease-card-body {
+    padding: 20px;
+}
+
+.disease-card-body h3 {
+    margin: 0 0 6px;
+    color: var(--color-text);
+}
+
+.disease-card-crop {
+    display: inline-block;
+    font-size: 12.5px;
+    color: var(--color-text-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.disease-card-body p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--color-text-light);
+}
+
+/*
+   Disease detail page — info sections
+ */
+
+.disease-info-section {
+    margin-bottom: 22px;
+}
+
+.disease-info-section h4 {
+    margin: 0 0 6px;
+    color: var(--color-primary-dark);
+    font-size: 15px;
+}
+
+.disease-info-section p {
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.7;
+}

@@ -584,3 +584,118 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+/* 
+   PHASE 6 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–5 code already in that file.
+    */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /*
+       Live disease photo preview on the Admin Add/Edit Disease forms
+     */
+    const diseaseImageInput = document.getElementById('image');
+    const diseaseImagePreview = document.getElementById('diseaseImagePreview');
+    const diseaseImagePlaceholder = document.getElementById('diseaseImagePlaceholder');
+
+    if (diseaseImageInput && diseaseImagePreview && diseaseImagePlaceholder) {
+        diseaseImageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                diseaseImagePreview.src = readerEvent.target.result;
+                diseaseImagePreview.classList.remove('hidden');
+                diseaseImagePlaceholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Admin — Delete Disease confirmation modal
+     */
+    const deleteDiseaseModal = document.getElementById('deleteDiseaseModal');
+    const deleteDiseaseForm = document.getElementById('deleteDiseaseForm');
+    const cancelDeleteDiseaseBtn = document.getElementById('cancelDeleteDisease');
+
+    if (deleteDiseaseModal && deleteDiseaseForm) {
+        document.querySelectorAll('[data-open-delete-modal]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                deleteDiseaseForm.setAttribute('action', button.dataset.deleteUrl);
+                deleteDiseaseModal.classList.remove('hidden');
+            });
+        });
+
+        if (cancelDeleteDiseaseBtn) {
+            cancelDeleteDiseaseBtn.addEventListener('click', function () {
+                deleteDiseaseModal.classList.add('hidden');
+            });
+        }
+
+        deleteDiseaseModal.addEventListener('click', function (event) {
+            if (event.target === deleteDiseaseModal) {
+                deleteDiseaseModal.classList.add('hidden');
+            }
+        });
+    }
+
+    /*
+       Farmer-facing Disease Alerts — search + crop filter + level filter
+     */
+    const diseaseGrid = document.getElementById('diseaseGrid');
+
+    if (diseaseGrid) {
+        const diseaseSearch = document.getElementById('diseaseSearch');
+        const diseaseCropFilter = document.getElementById('diseaseCropFilter');
+        const diseaseLevelButtons = document.querySelectorAll('#diseaseLevelFilter .filter-btn');
+        const diseaseNoMatches = document.getElementById('diseaseNoMatches');
+        let currentLevel = 'all';
+
+        function applyDiseaseFilters() {
+            const query = (diseaseSearch ? diseaseSearch.value : '').toLowerCase().trim();
+            const cropValue = diseaseCropFilter ? diseaseCropFilter.value : 'all';
+            const cards = diseaseGrid.querySelectorAll('.disease-card');
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const matchesSearch = card.dataset.title.includes(query);
+                const matchesCrop = cropValue === 'all' || card.dataset.crop === cropValue;
+                const matchesLevel = currentLevel === 'all' || card.dataset.level === currentLevel;
+                const shouldShow = matchesSearch && matchesCrop && matchesLevel;
+
+                card.style.display = shouldShow ? '' : 'none';
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (diseaseNoMatches) {
+                diseaseNoMatches.classList.toggle('hidden', visibleCount !== 0);
+            }
+        }
+
+        if (diseaseSearch) {
+            diseaseSearch.addEventListener('input', applyDiseaseFilters);
+        }
+
+        if (diseaseCropFilter) {
+            diseaseCropFilter.addEventListener('change', applyDiseaseFilters);
+        }
+
+        diseaseLevelButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                diseaseLevelButtons.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                currentLevel = btn.dataset.level;
+                applyDiseaseFilters();
+            });
+        });
+    }
+
+});
