@@ -8,6 +8,7 @@ use App\Http\Controllers\DiseaseAlertController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,13 +21,7 @@ use Illuminate\Support\Facades\Route;
  Phase 4: Crop Management (real module)
  Phase 5: Reminder Calendar (real module)
  Phase 6: Disease Alerts (real module) + first slice of the Admin area
-
- A note on the /admin group: this is a lightweight, standalone admin
- area for now — just enough to manage Diseases. Phase 15 wraps every
- admin sub-module built along the way (Diseases here, Tips in Phase 8,
- News in Phase 11, etc.) in one unified sidebar/dashboard shell. The
- controllers and routes built in each phase don't need to change for
- that — only the layout they render inside does.
+ Phase 7: Weather Information (real module — replaces the weather placeholder)
 */
 
 // Public Home Page
@@ -60,16 +55,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/diseases', [DiseaseAlertController::class, 'index'])->name('diseases.index');
     Route::get('/diseases/{disease}', [DiseaseAlertController::class, 'show'])->name('diseases.show');
 
+    // Weather Information (Phase 7)
+    Route::get('/weather', [WeatherController::class, 'index'])->name('weather.index');
+
     /*
-
+    
      Placeholder module routes (still Phase 3 stand-ins)
-
-       weather → Phase 7     tips     → Phase 8
-       prices  → Phase 9     qa       → Phase 10
-       news    → Phase 11    feedback → Phase 12
-       fertilizer → Phase 13
+    
+       tips     → Phase 8     prices    → Phase 9
+       qa       → Phase 10    news      → Phase 11
+       feedback → Phase 12    fertilizer → Phase 13
     */
-    Route::get('/weather', fn () => view('modules.coming-soon', ['title' => 'Weather', 'icon' => '⛅']))->name('weather.index');
     Route::get('/tips', fn () => view('modules.coming-soon', ['title' => 'Farming Tips', 'icon' => '💡']))->name('tips.index');
     Route::get('/prices', fn () => view('modules.coming-soon', ['title' => 'Crop Prices', 'icon' => '💰']))->name('prices.index');
     Route::get('/qa', fn () => view('modules.coming-soon', ['title' => 'Question & Answer', 'icon' => '❓']))->name('qa.index');
@@ -77,11 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/feedback', fn () => view('modules.coming-soon', ['title' => 'Feedback', 'icon' => '⭐']))->name('feedback.index');
     Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
 
-    /*
-
-     Admin area (Phase 6 starts it with Disease management only)
-
-    */
+    // Admin area (Phase 6 started it with Disease management)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
     });
