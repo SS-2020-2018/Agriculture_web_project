@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Crop;
 use App\Models\Disease;
 use App\Models\Task;
+use App\Models\Tip;
 use App\Services\WeatherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -38,7 +39,7 @@ class DashboardController extends Controller
 
         // Phase 7: wired to real data, cached for 30 minutes so the
         // dashboard doesn't hit the weather API on every single page load.
-        $weatherSummary = Cache::remember('dashboard-weather-summary', now()->addMinutes(10), function () {
+        $weatherSummary = Cache::remember('dashboard-weather-summary', now()->addMinutes(30), function () {
             $location = $this->weatherService->detectLocationFromIp();
 
             if (! $location) {
@@ -53,6 +54,10 @@ class DashboardController extends Controller
 
             return "{$weather['temp']}°C, {$weather['condition']} in {$weather['city']}";
         });
+
+        // Phase 8: wired to real data — today's featured tip is simply
+        // the most recently published one.
+        $latestTip = Tip::latest()->first();
 
         // TODO (Phase 11): News::latest()->count(), or count published this week.
         $newsCount = 0;
@@ -84,8 +89,7 @@ class DashboardController extends Controller
                 'key' => 'tips',
                 'icon' => '💡',
                 'title' => "Today's Farming Tip",
-                // TODO (Phase 8): swap for the featured Tip's title.
-                'summary' => 'A new tip is waiting for you today.',
+                'summary' => $latestTip ? $latestTip->title : 'No farming tips published yet.',
                 'color' => 'yellow',
                 'route' => 'tips.index',
             ],
