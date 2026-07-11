@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
+use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
 use App\Http\Controllers\Admin\TipController as AdminTipController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseAlertController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MarketPriceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
@@ -27,6 +29,7 @@ use Illuminate\Support\Facades\Route;
  Phase 6: Disease Alerts (real module) + first slice of the Admin area
  Phase 7: Weather Information (real module)
  Phase 8: Farming Tips + Saved Tips + Notifications (real modules)
+ Phase 9: Crop Price Information (real module — replaces prices placeholder)
 */
 
 // Public Home Page
@@ -79,26 +82,28 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
+    // Crop Price Information — farmer-facing browsing (Phase 9)
+    Route::get('/prices', [MarketPriceController::class, 'index'])->name('prices.index');
+    Route::get('/prices/{price}', [MarketPriceController::class, 'show'])->name('prices.show');
+
     /*
     
      Placeholder module routes (still Phase 3 stand-ins)
     
-       prices → Phase 9      qa        → Phase 10
-       news   → Phase 11     feedback  → Phase 12
-       fertilizer → Phase 13
+       qa   → Phase 10    news    → Phase 11
+       feedback → Phase 12   fertilizer → Phase 13
     */
-    Route::get('/prices', fn () => view('modules.coming-soon', ['title' => 'Crop Prices', 'icon' => '💰']))->name('prices.index');
     Route::get('/qa', fn () => view('modules.coming-soon', ['title' => 'Question & Answer', 'icon' => '❓']))->name('qa.index');
     Route::get('/news', fn () => view('modules.coming-soon', ['title' => 'Agriculture News', 'icon' => '📰']))->name('news.index');
     Route::get('/feedback', fn () => view('modules.coming-soon', ['title' => 'Feedback', 'icon' => '⭐']))->name('feedback.index');
     Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
 
-    // Admin area (Diseases from Phase 6, Tips added in Phase 8)
+    // Admin area (Diseases, Tips, and now Crop Prices)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
-
         Route::resource('tips', AdminTipController::class)->except('show');
         Route::get('/tips/{tip}/likers', [AdminTipController::class, 'likers'])->name('tips.likers');
+        Route::resource('prices', AdminMarketPriceController::class)->except('show');
     });
 });
 
