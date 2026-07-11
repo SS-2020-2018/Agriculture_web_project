@@ -8,12 +8,12 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /* @use HasFactory<\Database\Factories\UserFactory> */
+    /*@use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /*
      The attributes that are mass assignable.
-    
+     
      @var list<string>
      */
     protected $fillable = [
@@ -22,9 +22,8 @@ class User extends Authenticatable
         'password',
         'role',
     ];
-
     /*
-      The attributes that should be hidden for serialization.
+     The attributes that should be hidden for serialization.
      
      @var list<string>
      */
@@ -35,7 +34,7 @@ class User extends Authenticatable
 
     /*
      Get the attributes that should be cast.
-    
+     
      @return array<string, string>
      */
     protected function casts(): array
@@ -48,7 +47,7 @@ class User extends Authenticatable
 
     /*
      A user (farmer or admin) has exactly one profile record
-      holding phone, address, district, profession, and photo.
+     holding phone, address, district, profession, and photo.
      */
     public function profile()
     {
@@ -64,7 +63,7 @@ class User extends Authenticatable
     }
 
     /*
-      All reminders (tasks) created by this farmer.
+     All reminders (tasks) created by this farmer.
      */
     public function tasks()
     {
@@ -88,7 +87,15 @@ class User extends Authenticatable
     }
 
     /*
-      Tips this farmer has liked.
+     Market price records this user has published (admin accounts only).
+     */
+    public function publishedMarketPrices()
+    {
+        return $this->hasMany(MarketPrice::class, 'admin_id');
+    }
+
+    /*
+     Tips this farmer has liked.
      */
     public function likedTips()
     {
