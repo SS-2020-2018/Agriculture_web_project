@@ -17,9 +17,15 @@
                class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 Dashboard
             </a>
-            {{-- Crops, Weather, Reminders, Tips, Prices, Q&A, News, Feedback,
+            <a href="{{ route('tips.index') }}"
+               class="nav-link {{ request()->routeIs('tips.*') ? 'active' : '' }}">
+                Farming Tips
+            </a>
+            {{-- Crops, Weather, Reminders, Prices, Q&A, News, Feedback,
                  Fertilizer Guide links will be appended here phase by phase --}}
         </div>
+
+        @include('partials.notification-bell')
 
         @include('partials.profile-dropdown')
     </div>

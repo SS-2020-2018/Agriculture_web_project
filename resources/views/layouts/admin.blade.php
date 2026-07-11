@@ -27,6 +27,10 @@
                        class="nav-link-admin {{ request()->routeIs('admin.diseases.*') ? 'active' : '' }}">
                         🚨 Diseases
                     </a>
+                    <a href="{{ route('admin.tips.index') }}"
+                       class="nav-link-admin {{ request()->routeIs('admin.tips.*') ? 'active' : '' }}">
+                        💡 Tips
+                    </a>
                     <a href="{{ route('dashboard') }}" class="nav-link-admin">← Farmer Dashboard</a>
 
                     <form method="POST" action="{{ route('logout') }}" class="admin-logout-form">
