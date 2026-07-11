@@ -591,17 +591,18 @@ document.addEventListener("DOMContentLoaded", function () {
    to paste after the Phase 1–5 code already in that file.
     */
 
-document.addEventListener('DOMContentLoaded', function () {
-
+document.addEventListener("DOMContentLoaded", function () {
     /*
        Live disease photo preview on the Admin Add/Edit Disease forms
      */
-    const diseaseImageInput = document.getElementById('image');
-    const diseaseImagePreview = document.getElementById('diseaseImagePreview');
-    const diseaseImagePlaceholder = document.getElementById('diseaseImagePlaceholder');
+    const diseaseImageInput = document.getElementById("image");
+    const diseaseImagePreview = document.getElementById("diseaseImagePreview");
+    const diseaseImagePlaceholder = document.getElementById(
+        "diseaseImagePlaceholder",
+    );
 
     if (diseaseImageInput && diseaseImagePreview && diseaseImagePlaceholder) {
-        diseaseImageInput.addEventListener('change', function (event) {
+        diseaseImageInput.addEventListener("change", function (event) {
             const file = event.target.files[0];
             if (!file) {
                 return;
@@ -610,8 +611,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const reader = new FileReader();
             reader.onload = function (readerEvent) {
                 diseaseImagePreview.src = readerEvent.target.result;
-                diseaseImagePreview.classList.remove('hidden');
-                diseaseImagePlaceholder.classList.add('hidden');
+                diseaseImagePreview.classList.remove("hidden");
+                diseaseImagePlaceholder.classList.add("hidden");
             };
             reader.readAsDataURL(file);
         });
@@ -620,27 +621,34 @@ document.addEventListener('DOMContentLoaded', function () {
     /*
        Admin — Delete Disease confirmation modal
      */
-    const deleteDiseaseModal = document.getElementById('deleteDiseaseModal');
-    const deleteDiseaseForm = document.getElementById('deleteDiseaseForm');
-    const cancelDeleteDiseaseBtn = document.getElementById('cancelDeleteDisease');
+    const deleteDiseaseModal = document.getElementById("deleteDiseaseModal");
+    const deleteDiseaseForm = document.getElementById("deleteDiseaseForm");
+    const cancelDeleteDiseaseBtn = document.getElementById(
+        "cancelDeleteDisease",
+    );
 
     if (deleteDiseaseModal && deleteDiseaseForm) {
-        document.querySelectorAll('[data-open-delete-modal]').forEach(function (button) {
-            button.addEventListener('click', function () {
-                deleteDiseaseForm.setAttribute('action', button.dataset.deleteUrl);
-                deleteDiseaseModal.classList.remove('hidden');
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteDiseaseForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteDiseaseModal.classList.remove("hidden");
+                });
             });
-        });
 
         if (cancelDeleteDiseaseBtn) {
-            cancelDeleteDiseaseBtn.addEventListener('click', function () {
-                deleteDiseaseModal.classList.add('hidden');
+            cancelDeleteDiseaseBtn.addEventListener("click", function () {
+                deleteDiseaseModal.classList.add("hidden");
             });
         }
 
-        deleteDiseaseModal.addEventListener('click', function (event) {
+        deleteDiseaseModal.addEventListener("click", function (event) {
             if (event.target === deleteDiseaseModal) {
-                deleteDiseaseModal.classList.add('hidden');
+                deleteDiseaseModal.classList.add("hidden");
             }
         });
     }
@@ -648,54 +656,320 @@ document.addEventListener('DOMContentLoaded', function () {
     /*
        Farmer-facing Disease Alerts — search + crop filter + level filter
      */
-    const diseaseGrid = document.getElementById('diseaseGrid');
+    const diseaseGrid = document.getElementById("diseaseGrid");
 
     if (diseaseGrid) {
-        const diseaseSearch = document.getElementById('diseaseSearch');
-        const diseaseCropFilter = document.getElementById('diseaseCropFilter');
-        const diseaseLevelButtons = document.querySelectorAll('#diseaseLevelFilter .filter-btn');
-        const diseaseNoMatches = document.getElementById('diseaseNoMatches');
-        let currentLevel = 'all';
+        const diseaseSearch = document.getElementById("diseaseSearch");
+        const diseaseCropFilter = document.getElementById("diseaseCropFilter");
+        const diseaseLevelButtons = document.querySelectorAll(
+            "#diseaseLevelFilter .filter-btn",
+        );
+        const diseaseNoMatches = document.getElementById("diseaseNoMatches");
+        let currentLevel = "all";
 
         function applyDiseaseFilters() {
-            const query = (diseaseSearch ? diseaseSearch.value : '').toLowerCase().trim();
-            const cropValue = diseaseCropFilter ? diseaseCropFilter.value : 'all';
-            const cards = diseaseGrid.querySelectorAll('.disease-card');
+            const query = (diseaseSearch ? diseaseSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const cropValue = diseaseCropFilter
+                ? diseaseCropFilter.value
+                : "all";
+            const cards = diseaseGrid.querySelectorAll(".disease-card");
             let visibleCount = 0;
 
             cards.forEach(function (card) {
                 const matchesSearch = card.dataset.title.includes(query);
-                const matchesCrop = cropValue === 'all' || card.dataset.crop === cropValue;
-                const matchesLevel = currentLevel === 'all' || card.dataset.level === currentLevel;
+                const matchesCrop =
+                    cropValue === "all" || card.dataset.crop === cropValue;
+                const matchesLevel =
+                    currentLevel === "all" ||
+                    card.dataset.level === currentLevel;
                 const shouldShow = matchesSearch && matchesCrop && matchesLevel;
 
-                card.style.display = shouldShow ? '' : 'none';
+                card.style.display = shouldShow ? "" : "none";
                 if (shouldShow) {
                     visibleCount++;
                 }
             });
 
             if (diseaseNoMatches) {
-                diseaseNoMatches.classList.toggle('hidden', visibleCount !== 0);
+                diseaseNoMatches.classList.toggle("hidden", visibleCount !== 0);
             }
         }
 
         if (diseaseSearch) {
-            diseaseSearch.addEventListener('input', applyDiseaseFilters);
+            diseaseSearch.addEventListener("input", applyDiseaseFilters);
         }
 
         if (diseaseCropFilter) {
-            diseaseCropFilter.addEventListener('change', applyDiseaseFilters);
+            diseaseCropFilter.addEventListener("change", applyDiseaseFilters);
         }
 
         diseaseLevelButtons.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                diseaseLevelButtons.forEach(function (b) { b.classList.remove('active'); });
-                btn.classList.add('active');
+            btn.addEventListener("click", function () {
+                diseaseLevelButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
                 currentLevel = btn.dataset.level;
                 applyDiseaseFilters();
             });
         });
     }
+});
 
+/*
+   PHASE 8 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–7 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Notification bell dropdown
+     */
+    const notificationTrigger = document.getElementById("notificationTrigger");
+    const notificationDropdown = document.getElementById(
+        "notificationDropdown",
+    );
+
+    if (notificationTrigger && notificationDropdown) {
+        notificationTrigger.addEventListener("click", function (event) {
+            event.stopPropagation();
+            notificationDropdown.classList.toggle("open");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (
+                !notificationDropdown.contains(event.target) &&
+                !notificationTrigger.contains(event.target)
+            ) {
+                notificationDropdown.classList.remove("open");
+            }
+        });
+    }
+
+    /*
+       Live tip photo preview on the Admin Add/Edit Tip forms
+     */
+    const tipImageInput = document.getElementById("image");
+    const tipImagePreview = document.getElementById("tipImagePreview");
+    const tipImagePlaceholder = document.getElementById("tipImagePlaceholder");
+
+    if (tipImageInput && tipImagePreview && tipImagePlaceholder) {
+        tipImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                tipImagePreview.src = readerEvent.target.result;
+                tipImagePreview.classList.remove("hidden");
+                tipImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Admin — Delete Tip confirmation modal
+     */
+    const deleteTipModal = document.getElementById("deleteTipModal");
+    const deleteTipForm = document.getElementById("deleteTipForm");
+    const cancelDeleteTipBtn = document.getElementById("cancelDeleteTip");
+
+    if (deleteTipModal && deleteTipForm) {
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteTipForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteTipModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteTipBtn) {
+            cancelDeleteTipBtn.addEventListener("click", function () {
+                deleteTipModal.classList.add("hidden");
+            });
+        }
+
+        deleteTipModal.addEventListener("click", function (event) {
+            if (event.target === deleteTipModal) {
+                deleteTipModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Admin — "Who liked this tip" modal (AJAX-loaded)
+     */
+    const tipLikersModal = document.getElementById("tipLikersModal");
+    const tipLikersModalTitle = document.getElementById("tipLikersModalTitle");
+    const tipLikersList = document.getElementById("tipLikersList");
+    const tipLikersSearch = document.getElementById("tipLikersSearch");
+    const closeTipLikersModalBtn = document.getElementById(
+        "closeTipLikersModal",
+    );
+    let currentLikers = [];
+
+    function renderLikers(likers) {
+        if (likers.length === 0) {
+            tipLikersList.innerHTML =
+                '<p class="likers-empty">No farmers have liked this tip yet.</p>';
+            return;
+        }
+
+        tipLikersList.innerHTML = likers
+            .map(function (farmer) {
+                const avatar = farmer.photo_url
+                    ? '<img src="' +
+                      farmer.photo_url +
+                      '" alt="' +
+                      farmer.name +
+                      '" class="liker-avatar">'
+                    : '<div class="liker-avatar">🧑‍🌾</div>';
+
+                return (
+                    '<div class="liker-row">' +
+                    avatar +
+                    '<div class="liker-info"><strong>' +
+                    farmer.name +
+                    "</strong><span>" +
+                    farmer.address +
+                    "</span></div>" +
+                    "</div>"
+                );
+            })
+            .join("");
+    }
+
+    if (tipLikersModal) {
+        document
+            .querySelectorAll(".likes-count-btn")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    tipLikersModalTitle.textContent =
+                        'Farmers who liked "' + button.dataset.tipTitle + '"';
+                    tipLikersList.innerHTML =
+                        '<p class="likers-loading">Loading...</p>';
+                    tipLikersModal.classList.remove("hidden");
+                    if (tipLikersSearch) tipLikersSearch.value = "";
+
+                    fetch(button.dataset.likersUrl, {
+                        headers: { Accept: "application/json" },
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (data) {
+                            currentLikers = data.likers || [];
+                            renderLikers(currentLikers);
+                        })
+                        .catch(function () {
+                            tipLikersList.innerHTML =
+                                '<p class="likers-empty">Could not load likers. Please try again.</p>';
+                        });
+                });
+            });
+
+        if (tipLikersSearch) {
+            tipLikersSearch.addEventListener("input", function () {
+                const query = tipLikersSearch.value.toLowerCase().trim();
+                const filtered = currentLikers.filter(function (farmer) {
+                    return farmer.name.toLowerCase().includes(query);
+                });
+                renderLikers(filtered);
+            });
+        }
+
+        if (closeTipLikersModalBtn) {
+            closeTipLikersModalBtn.addEventListener("click", function () {
+                tipLikersModal.classList.add("hidden");
+            });
+        }
+
+        tipLikersModal.addEventListener("click", function (event) {
+            if (event.target === tipLikersModal) {
+                tipLikersModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Farmer-facing — AJAX Like toggle (Tips index grid)
+     */
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute("content");
+
+    function toggleTipLike(url) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                Accept: "application/json",
+            },
+        }).then(function (response) {
+            if (!response.ok) throw new Error("Request failed");
+            return response.json();
+        });
+    }
+
+    document
+        .querySelectorAll(".tip-like-btn[data-like-url]")
+        .forEach(function (button) {
+            // Skip the single big button on the tip detail page — handled separately below.
+            if (button.id === "tipShowLikeBtn") return;
+
+            button.addEventListener("click", function () {
+                toggleTipLike(button.dataset.likeUrl)
+                    .then(function (data) {
+                        button.classList.toggle(
+                            "tip-like-btn-active",
+                            data.liked,
+                        );
+                        button.querySelector(".tip-like-icon").textContent =
+                            data.liked ? "❤️" : "🤍";
+                        button.querySelector(".tip-like-count").textContent =
+                            data.likes_count;
+                    })
+                    .catch(function () {
+                        alert("Could not update your like. Please try again.");
+                    });
+            });
+        });
+
+    /*
+       Farmer-facing — AJAX Like toggle (Tip detail page)
+     */
+    const tipShowLikeBtn = document.getElementById("tipShowLikeBtn");
+
+    if (tipShowLikeBtn) {
+        tipShowLikeBtn.addEventListener("click", function () {
+            toggleTipLike(tipShowLikeBtn.dataset.likeUrl)
+                .then(function (data) {
+                    tipShowLikeBtn.classList.toggle(
+                        "tip-like-btn-active",
+                        data.liked,
+                    );
+                    tipShowLikeBtn.querySelector(".tip-like-icon").textContent =
+                        data.liked ? "❤️" : "🤍";
+                    tipShowLikeBtn.querySelector(
+                        "span:last-child",
+                    ).textContent = data.liked ? "Liked" : "Like this tip";
+
+                    const countEl = document.getElementById("tipShowLikeCount");
+                    if (countEl) countEl.textContent = data.likes_count;
+                })
+                .catch(function () {
+                    alert("Could not update your like. Please try again.");
+                });
+        });
+    }
 });
