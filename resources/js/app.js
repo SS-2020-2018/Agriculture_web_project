@@ -973,3 +973,156 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+/*
+   PHASE 9 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–8 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Live crop photo preview on the Admin Add/Edit Price forms
+     */
+    const priceImageInput = document.getElementById("crop_image");
+    const priceImagePreview = document.getElementById("priceImagePreview");
+    const priceImagePlaceholder = document.getElementById(
+        "priceImagePlaceholder",
+    );
+
+    if (priceImageInput && priceImagePreview && priceImagePlaceholder) {
+        priceImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                priceImagePreview.src = readerEvent.target.result;
+                priceImagePreview.classList.remove("hidden");
+                priceImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Admin — Delete Price confirmation modal
+     */
+    const deletePriceModal = document.getElementById("deletePriceModal");
+    const deletePriceForm = document.getElementById("deletePriceForm");
+    const cancelDeletePriceBtn = document.getElementById("cancelDeletePrice");
+
+    if (deletePriceModal && deletePriceForm) {
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deletePriceForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deletePriceModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeletePriceBtn) {
+            cancelDeletePriceBtn.addEventListener("click", function () {
+                deletePriceModal.classList.add("hidden");
+            });
+        }
+
+        deletePriceModal.addEventListener("click", function (event) {
+            if (event.target === deletePriceModal) {
+                deletePriceModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Farmer-facing — search + market filter + sort
+     */
+    const priceGrid = document.getElementById("priceGrid");
+
+    if (priceGrid) {
+        const priceSearch = document.getElementById("priceSearch");
+        const priceMarketFilter = document.getElementById("priceMarketFilter");
+        const priceSortSelect = document.getElementById("priceSortSelect");
+        const priceNoMatches = document.getElementById("priceNoMatches");
+
+        function applyPriceFilters() {
+            const query = (priceSearch ? priceSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const marketValue = priceMarketFilter
+                ? priceMarketFilter.value
+                : "all";
+            const cards = priceGrid.querySelectorAll(".price-card");
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const matchesSearch = card.dataset.title.includes(query);
+                const matchesMarket =
+                    marketValue === "all" ||
+                    card.dataset.market === marketValue;
+                const shouldShow = matchesSearch && matchesMarket;
+
+                card.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (priceNoMatches) {
+                priceNoMatches.classList.toggle("hidden", visibleCount !== 0);
+            }
+        }
+
+        function applySorting() {
+            const sortValue = priceSortSelect
+                ? priceSortSelect.value
+                : "recent";
+            const cards = Array.from(priceGrid.querySelectorAll(".price-card"));
+
+            cards.sort(function (a, b) {
+                switch (sortValue) {
+                    case "az":
+                        return a.dataset.title.localeCompare(b.dataset.title);
+                    case "price_high":
+                        return (
+                            parseFloat(b.dataset.price) -
+                            parseFloat(a.dataset.price)
+                        );
+                    case "price_low":
+                        return (
+                            parseFloat(a.dataset.price) -
+                            parseFloat(b.dataset.price)
+                        );
+                    case "recent":
+                    default:
+                        return (
+                            parseInt(b.dataset.updated, 10) -
+                            parseInt(a.dataset.updated, 10)
+                        );
+                }
+            });
+
+            cards.forEach(function (card) {
+                priceGrid.appendChild(card);
+            });
+        }
+
+        if (priceSearch) {
+            priceSearch.addEventListener("input", applyPriceFilters);
+        }
+
+        if (priceMarketFilter) {
+            priceMarketFilter.addEventListener("change", applyPriceFilters);
+        }
+
+        if (priceSortSelect) {
+            priceSortSelect.addEventListener("change", applySorting);
+        }
+    }
+});

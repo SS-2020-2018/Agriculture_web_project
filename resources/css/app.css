@@ -3164,3 +3164,136 @@ img {
         height: 180px;
     }
 }
+/*
+   PHASE 9 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+ */
+
+.admin-table-thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    font-size: 20px;
+}
+
+/*
+   Farmer-facing price grid
+ */
+
+.price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.price-card {
+    display: block;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.price-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+.price-card-image-wrap {
+    height: 150px;
+}
+
+.price-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.price-card-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    font-size: 44px;
+}
+
+.price-card-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.price-card-body h3 {
+    margin: 0;
+    color: var(--color-text);
+}
+
+.price-card-amount {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-primary-dark);
+    margin: 2px 0 6px;
+}
+
+.price-card-market {
+    font-size: 12.5px;
+    color: var(--color-text-light);
+    font-weight: 600;
+}
+
+.price-card-updated {
+    font-size: 11.5px;
+    color: var(--color-text-light);
+}
+
+/*
+   Price detail page
+ */
+
+.crop-detail-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    font-size: 72px;
+}
+
+.price-detail-amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-primary-dark);
+    background: #e8f5e9;
+    padding: 6px 16px;
+    border-radius: 999px;
+}
+
+.price-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price-history-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    color: var(--color-text);
+    transition: var(--transition);
+}
+
+.price-history-row:hover {
+    background: #e0ebe1;
+}
+
+.price-history-date {
+    color: var(--color-text-light);
+    font-size: 12px;
+}
