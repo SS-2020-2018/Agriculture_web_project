@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// Note: Notifiable is used later (Phase 10) for the in-app notification system.
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -25,9 +24,9 @@ class User extends Authenticatable
     ];
 
     /*
-     The attributes that should be hidden for serialization.
+      The attributes that should be hidden for serialization.
      
-      @var list<string>
+     @var list<string>
      */
     protected $hidden = [
         'password',
@@ -48,7 +47,7 @@ class User extends Authenticatable
     }
 
     /*
-      A user (farmer or admin) has exactly one profile record
+     A user (farmer or admin) has exactly one profile record
       holding phone, address, district, profession, and photo.
      */
     public function profile()
@@ -57,7 +56,7 @@ class User extends Authenticatable
     }
 
     /*
-      All crops registered by this farmer.
+     All crops registered by this farmer.
      */
     public function crops()
     {
@@ -65,7 +64,7 @@ class User extends Authenticatable
     }
 
     /*
-     All reminders (tasks) created by this farmer.
+      All reminders (tasks) created by this farmer.
      */
     public function tasks()
     {
@@ -78,6 +77,30 @@ class User extends Authenticatable
     public function publishedDiseases()
     {
         return $this->hasMany(Disease::class, 'admin_id');
+    }
+
+    /*
+     Farming tips this user has published (admin accounts only).
+     */
+    public function publishedTips()
+    {
+        return $this->hasMany(Tip::class, 'admin_id');
+    }
+
+    /*
+      Tips this farmer has liked.
+     */
+    public function likedTips()
+    {
+        return $this->belongsToMany(Tip::class, 'tip_likes')->withTimestamps();
+    }
+
+    /*
+     Tips this farmer has saved for later (independent snapshots).
+     */
+    public function savedTips()
+    {
+        return $this->hasMany(SavedTip::class);
     }
 
     // Relationships to Question, Feedback, etc. will be added here in
