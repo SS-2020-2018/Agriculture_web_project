@@ -8,13 +8,13 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /*@use HasFactory<\Database\Factories\UserFactory> */
+    /* @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /*
-     The attributes that are mass assignable.
+      The attributes that are mass assignable.
      
-     @var list<string>
+      @var list<string>
      */
     protected $fillable = [
         'name',
@@ -22,10 +22,11 @@ class User extends Authenticatable
         'password',
         'role',
     ];
+
     /*
-     The attributes that should be hidden for serialization.
+      The attributes that should be hidden for serialization.
      
-     @var list<string>
+      @var list<string>
      */
     protected $hidden = [
         'password',
@@ -33,9 +34,9 @@ class User extends Authenticatable
     ];
 
     /*
-     Get the attributes that should be cast.
+      Get the attributes that should be cast.
      
-     @return array<string, string>
+      @return array<string, string>
      */
     protected function casts(): array
     {
@@ -46,8 +47,8 @@ class User extends Authenticatable
     }
 
     /*
-     A user (farmer or admin) has exactly one profile record
-     holding phone, address, district, profession, and photo.
+      A user (farmer or admin) has exactly one profile record
+      holding phone, address, district, profession, and photo.
      */
     public function profile()
     {
@@ -55,7 +56,7 @@ class User extends Authenticatable
     }
 
     /*
-     All crops registered by this farmer.
+      All crops registered by this farmer.
      */
     public function crops()
     {
@@ -63,7 +64,7 @@ class User extends Authenticatable
     }
 
     /*
-     All reminders (tasks) created by this farmer.
+      All reminders (tasks) created by this farmer.
      */
     public function tasks()
     {
@@ -71,7 +72,7 @@ class User extends Authenticatable
     }
 
     /*
-     Disease alerts this user has published (admin accounts only).
+      Disease alerts this user has published (admin accounts only).
      */
     public function publishedDiseases()
     {
@@ -79,7 +80,7 @@ class User extends Authenticatable
     }
 
     /*
-     Farming tips this user has published (admin accounts only).
+      Farming tips this user has published (admin accounts only).
      */
     public function publishedTips()
     {
@@ -87,7 +88,7 @@ class User extends Authenticatable
     }
 
     /*
-     Market price records this user has published (admin accounts only).
+      Market price records this user has published (admin accounts only).
      */
     public function publishedMarketPrices()
     {
@@ -95,7 +96,7 @@ class User extends Authenticatable
     }
 
     /*
-     Tips this farmer has liked.
+      Tips this farmer has liked.
      */
     public function likedTips()
     {
@@ -103,15 +104,31 @@ class User extends Authenticatable
     }
 
     /*
-     Tips this farmer has saved for later (independent snapshots).
+      Tips this farmer has saved for later (independent snapshots).
      */
     public function savedTips()
     {
         return $this->hasMany(SavedTip::class);
     }
 
-    // Relationships to Question, Feedback, etc. will be added here in
-    // their respective phases as those models are created.
+    /*
+      Questions this farmer has asked.
+     */
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    /*
+      Answers this farmer has liked.
+     */
+    public function likedAnswers()
+    {
+        return $this->belongsToMany(Answer::class, 'answer_likes')->withTimestamps();
+    }
+
+    // Relationships to Feedback, etc. will be added here in their
+    // respective phases as those models are created.
 
     public function isAdmin(): bool
     {
