@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AnswerController as AdminAnswerController;
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
 use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
+use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\TipController as AdminTipController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CropController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketPriceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QAController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SavedTipController;
 use App\Http\Controllers\TipController;
@@ -29,7 +32,8 @@ use Illuminate\Support\Facades\Route;
  Phase 6: Disease Alerts (real module) + first slice of the Admin area
  Phase 7: Weather Information (real module)
  Phase 8: Farming Tips + Saved Tips + Notifications (real modules)
- Phase 9: Crop Price Information (real module — replaces prices placeholder)
+ Phase 9: Crop Price Information (real module)
+ Phase 10: Question & Answer Forum (real module — replaces qa placeholder)
 */
 
 // Public Home Page
@@ -76,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/tips/{tip}/save', [SavedTipController::class, 'store'])->name('saved-tips.store');
     Route::delete('/saved-tips/{savedTip}', [SavedTipController::class, 'destroy'])->name('saved-tips.destroy');
 
-    // Notifications (Phase 8 — also powers Phase 10's Q&A reply alerts)
+    // Notifications (Phase 8)
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{id}/open', [NotificationController::class, 'open'])->name('notifications.open');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
@@ -86,24 +90,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/prices', [MarketPriceController::class, 'index'])->name('prices.index');
     Route::get('/prices/{price}', [MarketPriceController::class, 'show'])->name('prices.show');
 
+    // Question & Answer Forum — farmer-facing (Phase 10)
+    Route::get('/qa', [QAController::class, 'index'])->name('qa.index');
+    Route::post('/qa', [QAController::class, 'store'])->name('qa.store');
+    Route::post('/qa/answers/{answer}/like', [QAController::class, 'toggleAnswerLike'])->name('qa.answers.like');
+
     /*
     
      Placeholder module routes (still Phase 3 stand-ins)
     
-       qa   → Phase 10    news    → Phase 11
-       feedback → Phase 12   fertilizer → Phase 13
+       news → Phase 11     feedback → Phase 12    fertilizer → Phase 13
     */
-    Route::get('/qa', fn () => view('modules.coming-soon', ['title' => 'Question & Answer', 'icon' => '❓']))->name('qa.index');
     Route::get('/news', fn () => view('modules.coming-soon', ['title' => 'Agriculture News', 'icon' => '📰']))->name('news.index');
     Route::get('/feedback', fn () => view('modules.coming-soon', ['title' => 'Feedback', 'icon' => '⭐']))->name('feedback.index');
     Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
 
-    // Admin area (Diseases, Tips, and now Crop Prices)
+    // Admin area (Diseases, Tips, Crop Prices, and now Q&A)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
+
         Route::resource('tips', AdminTipController::class)->except('show');
         Route::get('/tips/{tip}/likers', [AdminTipController::class, 'likers'])->name('tips.likers');
+
         Route::resource('prices', AdminMarketPriceController::class)->except('show');
+
+        Route::get('/qa', [AdminQuestionController::class, 'index'])->name('qa.index');
+        Route::get('/qa/{question}', [AdminQuestionController::class, 'show'])->name('qa.show');
+        Route::post('/qa/{question}/answer', [AdminAnswerController::class, 'store'])->name('qa.answer');
     });
 });
 
