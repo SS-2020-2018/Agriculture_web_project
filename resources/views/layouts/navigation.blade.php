@@ -18,10 +18,14 @@
                 Dashboard
             </a>
             <a href="{{ route('tips.index') }}"
-               class="nav-link {{ request()->routeIs('tips.*') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('tips.*') || request()->routeIs('saved-tips.*') ? 'active' : '' }}">
                 Farming Tips
             </a>
-            {{-- Crops, Weather, Reminders, Prices, Q&A, News, Feedback,
+            <a href="{{ route('qa.index') }}"
+               class="nav-link {{ request()->routeIs('qa.*') ? 'active' : '' }}">
+                Q&amp;A
+            </a>
+            {{-- Crops, Weather, Reminders, Prices, News, Feedback,
                  Fertilizer Guide links will be appended here phase by phase --}}
         </div>
 
