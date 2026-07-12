@@ -1126,3 +1126,130 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+/*
+   PHASE 10 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–9 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Live photo preview when attaching an image to a question
+     */
+    const questionImageInput = document.getElementById("image");
+    const questionImagePreview = document.getElementById(
+        "questionImagePreview",
+    );
+    const questionImagePlaceholder = document.getElementById(
+        "questionImagePlaceholder",
+    );
+
+    if (
+        questionImageInput &&
+        questionImagePreview &&
+        questionImagePlaceholder
+    ) {
+        questionImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                questionImagePreview.src = readerEvent.target.result;
+                questionImagePreview.classList.remove("hidden");
+                questionImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       AJAX like/unlike toggle for answers
+     */
+    const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute("content");
+
+    document.querySelectorAll(".answer-like-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+            fetch(button.dataset.likeUrl, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
+                },
+            })
+                .then(function (response) {
+                    if (!response.ok) throw new Error("Request failed");
+                    return response.json();
+                })
+                .then(function (data) {
+                    button.classList.toggle(
+                        "answer-like-btn-active",
+                        data.liked,
+                    );
+                    button.querySelector(".answer-like-icon").textContent =
+                        data.liked ? "👍" : "👍🏻";
+                    button.querySelector(".answer-like-count").textContent =
+                        data.likes_count;
+                })
+                .catch(function () {
+                    alert("Could not update your like. Please try again.");
+                });
+        });
+    });
+
+    /*
+       Admin — Q&A search + status filter
+     */
+    const qaAdminList = document.getElementById("qaAdminList");
+
+    if (qaAdminList) {
+        const qaSearch = document.getElementById("qaSearch");
+        const qaStatusButtons = document.querySelectorAll(
+            "#qaStatusFilter .filter-btn",
+        );
+        const qaNoMatches = document.getElementById("qaNoMatches");
+        let currentStatus = "all";
+
+        function applyQaFilters() {
+            const query = (qaSearch ? qaSearch.value : "").toLowerCase().trim();
+            const rows = qaAdminList.querySelectorAll(".qa-admin-row");
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matchesSearch = row.dataset.title.includes(query);
+                const matchesStatus =
+                    currentStatus === "all" ||
+                    row.dataset.status === currentStatus;
+                const shouldShow = matchesSearch && matchesStatus;
+
+                row.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (qaNoMatches) {
+                qaNoMatches.classList.toggle("hidden", visibleCount !== 0);
+            }
+        }
+
+        if (qaSearch) {
+            qaSearch.addEventListener("input", applyQaFilters);
+        }
+
+        qaStatusButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                qaStatusButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
+                currentStatus = btn.dataset.status;
+                applyQaFilters();
+            });
+        });
+    }
+});

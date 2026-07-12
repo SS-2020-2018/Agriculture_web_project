@@ -3297,3 +3297,256 @@ img {
     color: var(--color-text-light);
     font-size: 12px;
 }
+/*
+   PHASE 10 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+ */
+
+.qa-form-card {
+    max-width: 680px;
+    margin: 0 auto 32px;
+}
+
+.qa-thread-heading {
+    color: var(--color-primary-dark);
+    margin-bottom: 16px;
+}
+
+/*
+   Conversation threads (chat bubbles)
+ */
+
+.qa-thread-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.qa-thread {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.qa-bubble {
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.qa-bubble p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.qa-bubble-question {
+    background: var(--color-card);
+    border-left: 4px solid var(--color-secondary);
+}
+
+.qa-bubble-answer {
+    background: #e8f5e9;
+    border-left: 4px solid var(--color-primary);
+    margin-left: 24px;
+}
+
+.qa-bubble-image {
+    max-width: 220px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.qa-bubble-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--color-text-light);
+}
+
+.qa-answer-author {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-primary-dark);
+    margin-bottom: 6px;
+}
+
+/*
+   Status badge (Pending / Answered)
+ */
+
+.qa-status-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.qa-status-pending {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.qa-status-answered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/*
+   Answer like button
+ */
+
+.answer-like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-border);
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.answer-like-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+
+.answer-like-btn-active {
+    background: #e8f5e9;
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+
+/*
+   Admin — Q&A list
+ */
+
+.qa-admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.qa-admin-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--color-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 14px 18px;
+    transition: var(--transition);
+}
+
+.qa-admin-row:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.qa-admin-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.qa-admin-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg);
+    font-size: 18px;
+}
+
+.qa-admin-row-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.qa-admin-row-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.qa-admin-row-header strong {
+    color: var(--color-text);
+}
+
+.qa-admin-row-body p {
+    margin: 0 0 4px;
+    font-size: 13.5px;
+    color: var(--color-text-light);
+}
+
+.qa-admin-row-date {
+    font-size: 11.5px;
+    color: var(--color-text-light);
+}
+
+.qa-admin-row-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/*
+   Admin — Question detail page
+ */
+
+.qa-detail-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.qa-detail-farmer-card {
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--color-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 20px;
+}
+
+.qa-detail-farmer-card div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.qa-detail-farmer-card span {
+    font-size: 12.5px;
+    color: var(--color-text-light);
+}
+
+/*
+   Responsive — Phase 10
+ */
+
+@media (max-width: 600px) {
+    .qa-bubble-answer {
+        margin-left: 8px;
+    }
+}
