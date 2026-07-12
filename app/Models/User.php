@@ -96,6 +96,14 @@ class User extends Authenticatable
     }
 
     /*
+      News articles this user has published (admin accounts only).
+     */
+    public function publishedNews()
+    {
+        return $this->hasMany(News::class, 'admin_id');
+    }
+
+    /*
       Tips this farmer has liked.
      */
     public function likedTips()
