@@ -1253,3 +1253,148 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+/*
+   PHASE 11 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–10 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Live photo preview on the Admin Add/Edit News forms
+     */
+    const newsImageInput = document.getElementById("image");
+    const newsImagePreview = document.getElementById("newsImagePreview");
+    const newsImagePlaceholder = document.getElementById(
+        "newsImagePlaceholder",
+    );
+
+    if (newsImageInput && newsImagePreview && newsImagePlaceholder) {
+        newsImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                newsImagePreview.src = readerEvent.target.result;
+                newsImagePreview.classList.remove("hidden");
+                newsImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Admin — Delete News confirmation modal
+     */
+    const deleteNewsModal = document.getElementById("deleteNewsModal");
+    const deleteNewsForm = document.getElementById("deleteNewsForm");
+    const cancelDeleteNewsBtn = document.getElementById("cancelDeleteNews");
+
+    if (deleteNewsModal && deleteNewsForm) {
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteNewsForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteNewsModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteNewsBtn) {
+            cancelDeleteNewsBtn.addEventListener("click", function () {
+                deleteNewsModal.classList.add("hidden");
+            });
+        }
+
+        deleteNewsModal.addEventListener("click", function (event) {
+            if (event.target === deleteNewsModal) {
+                deleteNewsModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Farmer-facing — search + category filter + sort
+     */
+    const newsGrid = document.getElementById("newsGrid");
+
+    if (newsGrid) {
+        const newsSearch = document.getElementById("newsSearch");
+        const newsCategoryButtons = document.querySelectorAll(
+            "#newsCategoryFilter .filter-btn",
+        );
+        const newsSortSelect = document.getElementById("newsSortSelect");
+        const newsNoMatches = document.getElementById("newsNoMatches");
+        let currentCategory = "all";
+
+        function applyNewsFilters() {
+            const query = (newsSearch ? newsSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const cards = newsGrid.querySelectorAll(".news-card");
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const matchesSearch = card.dataset.title.includes(query);
+                const matchesCategory =
+                    currentCategory === "all" ||
+                    card.dataset.category === currentCategory;
+                const shouldShow = matchesSearch && matchesCategory;
+
+                card.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (newsNoMatches) {
+                newsNoMatches.classList.toggle("hidden", visibleCount !== 0);
+            }
+        }
+
+        function applyNewsSorting() {
+            const sortValue = newsSortSelect ? newsSortSelect.value : "recent";
+            const cards = Array.from(newsGrid.querySelectorAll(".news-card"));
+
+            cards.sort(function (a, b) {
+                if (sortValue === "az") {
+                    return a.dataset.title.localeCompare(b.dataset.title);
+                }
+                return (
+                    parseInt(b.dataset.published, 10) -
+                    parseInt(a.dataset.published, 10)
+                );
+            });
+
+            cards.forEach(function (card) {
+                newsGrid.appendChild(card);
+            });
+        }
+
+        if (newsSearch) {
+            newsSearch.addEventListener("input", applyNewsFilters);
+        }
+
+        newsCategoryButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                newsCategoryButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
+                currentCategory = btn.dataset.category;
+                applyNewsFilters();
+            });
+        });
+
+        if (newsSortSelect) {
+            newsSortSelect.addEventListener("change", applyNewsSorting);
+        }
+    }
+});
