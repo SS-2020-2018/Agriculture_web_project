@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AnswerController as AdminAnswerController;
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
 use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\TipController as AdminTipController;
 use App\Http\Controllers\ContactController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseAlertController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketPriceController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QAController;
@@ -33,7 +35,8 @@ use Illuminate\Support\Facades\Route;
  Phase 7: Weather Information (real module)
  Phase 8: Farming Tips + Saved Tips + Notifications (real modules)
  Phase 9: Crop Price Information (real module)
- Phase 10: Question & Answer Forum (real module — replaces qa placeholder)
+ Phase 10: Question & Answer Forum (real module)
+ Phase 11: Agriculture News (real module — replaces news placeholder)
 */
 
 // Public Home Page
@@ -95,17 +98,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/qa', [QAController::class, 'store'])->name('qa.store');
     Route::post('/qa/answers/{answer}/like', [QAController::class, 'toggleAnswerLike'])->name('qa.answers.like');
 
+    // Agriculture News — farmer-facing browsing (Phase 11)
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
+
     /*
-    
+
      Placeholder module routes (still Phase 3 stand-ins)
-    
-       news → Phase 11     feedback → Phase 12    fertilizer → Phase 13
+
+       feedback → Phase 12    fertilizer → Phase 13
     */
-    Route::get('/news', fn () => view('modules.coming-soon', ['title' => 'Agriculture News', 'icon' => '📰']))->name('news.index');
     Route::get('/feedback', fn () => view('modules.coming-soon', ['title' => 'Feedback', 'icon' => '⭐']))->name('feedback.index');
     Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
 
-    // Admin area (Diseases, Tips, Crop Prices, and now Q&A)
+    // Admin area (Diseases, Tips, Crop Prices, Q&A, and now News)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
 
@@ -117,6 +123,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/qa', [AdminQuestionController::class, 'index'])->name('qa.index');
         Route::get('/qa/{question}', [AdminQuestionController::class, 'show'])->name('qa.show');
         Route::post('/qa/{question}/answer', [AdminAnswerController::class, 'store'])->name('qa.answer');
+
+        Route::resource('news', AdminNewsController::class)->except('show');
     });
 });
 
