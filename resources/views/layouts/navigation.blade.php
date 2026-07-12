@@ -25,8 +25,12 @@
                class="nav-link {{ request()->routeIs('qa.*') ? 'active' : '' }}">
                 Q&amp;A
             </a>
-            {{-- Crops, Weather, Reminders, Prices, News, Feedback,
-                 Fertilizer Guide links will be appended here phase by phase --}}
+            <a href="{{ route('news.index') }}"
+               class="nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">
+                News
+            </a>
+            {{-- Crops, Weather, Reminders, Prices, Feedback, Fertilizer
+                 Guide links will be appended here phase by phase --}}
         </div>
 
         @include('partials.notification-bell')

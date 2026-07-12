@@ -39,6 +39,10 @@
                        class="nav-link-admin {{ request()->routeIs('admin.qa.*') ? 'active' : '' }}">
                         ❓ Q&amp;A
                     </a>
+                    <a href="{{ route('admin.news.index') }}"
+                       class="nav-link-admin {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
+                        📰 News
+                    </a>
                     <a href="{{ route('dashboard') }}" class="nav-link-admin">← Farmer Dashboard</a>
 
                     <form method="POST" action="{{ route('logout') }}" class="admin-logout-form">
