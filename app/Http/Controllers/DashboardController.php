@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Crop;
 use App\Models\Disease;
 use App\Models\MarketPrice;
+use App\Models\Question;
 use App\Models\Task;
 use App\Models\Tip;
 use App\Services\WeatherService;
@@ -63,12 +64,13 @@ class DashboardController extends Controller
         // Phase 9: wired to real data.
         $priceCount = MarketPrice::count();
 
+        // Phase 10: wired to real data.
+        $pendingQuestions = Question::where('user_id', $user->id)->where('status', 'pending')->count();
+
         // TODO (Phase 11): News::latest()->count(), or count published this week.
         $newsCount = 0;
         // TODO (Phase 11): the most recently published News record's title.
         $latestNewsTitle = null;
-        // TODO (Phase 10): Question::where('user_id', $user->id)->where('status', 'pending')->count();
-        $pendingQuestions = 0;
 
         $modules = [
             [
