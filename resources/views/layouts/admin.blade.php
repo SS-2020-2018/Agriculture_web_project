@@ -43,6 +43,10 @@
                        class="nav-link-admin {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
                         📰 News
                     </a>
+                    <a href="{{ route('admin.feedback.index') }}"
+                       class="nav-link-admin {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
+                        ⭐ Feedback
+                    </a>
                     <a href="{{ route('dashboard') }}" class="nav-link-admin">← Farmer Dashboard</a>
 
                     <form method="POST" action="{{ route('logout') }}" class="admin-logout-form">
