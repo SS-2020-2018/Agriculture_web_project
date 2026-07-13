@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Crop;
 use App\Models\Disease;
+use App\Models\Fertilizer;
 use App\Models\MarketPrice;
 use App\Models\News;
 use App\Models\Question;
@@ -22,26 +23,23 @@ class DashboardController extends Controller
 
     /*
       Display the Farmer Dashboard — a personalized welcome message plus
-      a grid of clickable module cards. Each card's summary is wired to
-      a placeholder value for now; the TODO comments mark exactly which
-      future phase replaces that value with a real Eloquent query.
+      a grid of clickable module cards. All 10 module summaries are now
+      wired to real data — the last one (Fertilizer Guide) was resolved
+      in Phase 13.
      */
     public function index(Request $request): View
     {
         $user = $request->user();
 
-        // Phase 4: wired to real data.
         $cropCount = Crop::where('user_id', $user->id)->count();
         $cropsReadyCount = Crop::where('user_id', $user->id)->where('status', 'ready_for_harvest')->count();
 
-        // Phase 5: wired to real data.
         $todaysReminderCount = Task::where('user_id', $user->id)->whereDate('reminder_date', today())->count();
 
-        // Phase 6: wired to real data.
         $activeDiseaseAlerts = Disease::count();
 
-        // Phase 7: wired to real data, cached for 30 minutes so the
-        // dashboard doesn't hit the weather API on every single page load.
+        // Cached for 30 minutes so the dashboard doesn't hit the weather
+        // API on every single page load.
         $weatherSummary = Cache::remember('dashboard-weather-summary', now()->addMinutes(30), function () {
             $location = $this->weatherService->detectLocationFromIp();
 
@@ -58,19 +56,18 @@ class DashboardController extends Controller
             return "{$weather['temp']}°C, {$weather['condition']} in {$weather['city']}";
         });
 
-        // Phase 8: wired to real data — today's featured tip is simply
-        // the most recently published one.
+        // Today's featured tip is simply the most recently published one.
         $latestTip = Tip::latest()->first();
 
-        // Phase 9: wired to real data.
         $priceCount = MarketPrice::count();
 
-        // Phase 10: wired to real data.
         $pendingQuestions = Question::where('user_id', $user->id)->where('status', 'pending')->count();
 
-        // Phase 11: wired to real data.
         $newsCount = News::count();
         $latestNewsTitle = News::latest()->first()?->title;
+
+        // Phase 13: wired to real data — the last placeholder resolved.
+        $fertilizerCount = Fertilizer::count();
 
         $modules = [
             [
@@ -149,7 +146,7 @@ class DashboardController extends Controller
                 'key' => 'fertilizer',
                 'icon' => '🧪',
                 'title' => 'Fertilizer Guide',
-                'summary' => 'Find the right fertilizer for any crop.',
+                'summary' => "{$fertilizerCount} crop fertilizer guides available",
                 'color' => 'purple',
                 'route' => 'fertilizer.index',
             ],
