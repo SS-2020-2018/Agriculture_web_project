@@ -3630,3 +3630,166 @@ img {
     font-size: 12px;
     color: var(--color-text-light);
 }
+/*
+   PHASE 12 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+ */
+
+.feedback-form-card {
+    max-width: 680px;
+    margin: 0 auto 32px;
+}
+
+.feedback-form-sub {
+    color: var(--color-text-light);
+    font-size: 14px;
+    margin: -8px 0 20px;
+}
+
+/*
+   Interactive star rating (submission form)
+ */
+
+.star-rating {
+    display: flex;
+    gap: 6px;
+}
+
+.star {
+    font-size: 32px;
+    color: #d8dfd9;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        color 0.15s ease;
+    user-select: none;
+}
+
+.star:hover {
+    transform: scale(1.15);
+}
+
+.star.star-active {
+    color: #f9a825;
+}
+
+/*
+   Read-only star display (history lists)
+ */
+
+.star-display {
+    display: flex;
+    gap: 2px;
+}
+
+.star-display-icon {
+    font-size: 16px;
+    color: #d8dfd9;
+}
+
+.star-display-filled {
+    color: #f9a825;
+}
+
+/*
+   Farmer — feedback history
+ */
+
+.feedback-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.feedback-history-card {
+    background: var(--color-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 18px 20px;
+}
+
+.feedback-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.feedback-history-card p {
+    margin: 0 0 12px;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.feedback-history-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--color-text-light);
+}
+
+.feedback-history-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.feedback-locked-note {
+    font-size: 11.5px;
+    color: var(--color-text-light);
+}
+
+/*
+   Admin — Feedback list
+ */
+
+.feedback-admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.feedback-admin-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--color-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 18px;
+}
+
+.feedback-admin-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.feedback-admin-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.feedback-admin-header strong {
+    color: var(--color-text);
+}
+
+.feedback-admin-body p {
+    margin: 0 0 6px;
+    font-size: 13.5px;
+    color: var(--color-text-light);
+}
+
+/*
+   Responsive — Phase 12
+ */
+
+@media (max-width: 600px) {
+    .feedback-admin-card {
+        flex-direction: column;
+    }
+}

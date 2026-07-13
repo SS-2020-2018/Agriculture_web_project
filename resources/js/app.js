@@ -1398,3 +1398,272 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+/*
+   PHASE 12 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–11 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Interactive star rating — click to select, hover to preview
+     */
+    const starRating = document.getElementById("starRating");
+    const ratingInput = document.getElementById("ratingInput");
+
+    if (starRating && ratingInput) {
+        const stars = Array.from(starRating.querySelectorAll(".star"));
+
+        function paintStars(upToValue) {
+            stars.forEach(function (star) {
+                star.classList.toggle(
+                    "star-active",
+                    parseInt(star.dataset.value, 10) <= upToValue,
+                );
+            });
+        }
+
+        // Paint the initial state (e.g. after a validation error redisplay).
+        paintStars(parseInt(ratingInput.value, 10) || 0);
+
+        stars.forEach(function (star) {
+            star.addEventListener("click", function () {
+                ratingInput.value = star.dataset.value;
+                paintStars(parseInt(star.dataset.value, 10));
+            });
+
+            star.addEventListener("mouseenter", function () {
+                paintStars(parseInt(star.dataset.value, 10));
+            });
+        });
+
+        starRating.addEventListener("mouseleave", function () {
+            paintStars(parseInt(ratingInput.value, 10) || 0);
+        });
+    }
+
+    /*
+       Edit-in-place for the farmer's own feedback (same pattern as
+       the Reminder Calendar's sidebar form from Phase 5)
+     */
+    const feedbackForm = document.getElementById("feedbackForm");
+
+    if (feedbackForm) {
+        const feedbackFormTitle = document.getElementById("feedbackFormTitle");
+        const feedbackFormMethod =
+            document.getElementById("feedbackFormMethod");
+        const feedbackSubmitBtn = document.getElementById("feedbackSubmitBtn");
+        const cancelEditFeedbackBtn =
+            document.getElementById("cancelEditFeedback");
+        const commentInput = document.getElementById("comment");
+
+        function enterFeedbackEditMode(rating, comment, updateUrl) {
+            ratingInput.value = rating;
+            commentInput.value = comment || "";
+            document
+                .querySelectorAll("#starRating .star")
+                .forEach(function (star) {
+                    star.classList.toggle(
+                        "star-active",
+                        parseInt(star.dataset.value, 10) <=
+                            parseInt(rating, 10),
+                    );
+                });
+
+            feedbackForm.setAttribute("action", updateUrl);
+            feedbackFormMethod.value = "PUT";
+            feedbackFormTitle.textContent = "Edit Your Feedback";
+            feedbackSubmitBtn.textContent = "Save Changes";
+            cancelEditFeedbackBtn.classList.remove("hidden");
+
+            document
+                .getElementById("feedbackFormCard")
+                .scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function exitFeedbackEditMode() {
+            ratingInput.value = 0;
+            commentInput.value = "";
+            document
+                .querySelectorAll("#starRating .star")
+                .forEach(function (star) {
+                    star.classList.remove("star-active");
+                });
+
+            feedbackForm.setAttribute("action", feedbackForm.dataset.storeUrl);
+            feedbackFormMethod.value = "POST";
+            feedbackFormTitle.textContent = "Share Your Experience";
+            feedbackSubmitBtn.textContent = "Submit Feedback";
+            cancelEditFeedbackBtn.classList.add("hidden");
+        }
+
+        document.querySelectorAll(".feedback-edit-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                enterFeedbackEditMode(
+                    btn.dataset.rating,
+                    btn.dataset.comment,
+                    btn.dataset.updateUrl,
+                );
+            });
+        });
+
+        if (cancelEditFeedbackBtn) {
+            cancelEditFeedbackBtn.addEventListener(
+                "click",
+                exitFeedbackEditMode,
+            );
+        }
+    }
+
+    /*
+       Delete confirmation modal (farmer's own feedback)
+     */
+    const deleteFeedbackModal = document.getElementById("deleteFeedbackModal");
+    const deleteFeedbackForm = document.getElementById("deleteFeedbackForm");
+    const cancelDeleteFeedbackBtn = document.getElementById(
+        "cancelDeleteFeedback",
+    );
+
+    if (deleteFeedbackModal && deleteFeedbackForm) {
+        document
+            .querySelectorAll(".feedback-delete-btn")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteFeedbackForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteFeedbackModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteFeedbackBtn) {
+            cancelDeleteFeedbackBtn.addEventListener("click", function () {
+                deleteFeedbackModal.classList.add("hidden");
+            });
+        }
+
+        deleteFeedbackModal.addEventListener("click", function (event) {
+            if (event.target === deleteFeedbackModal) {
+                deleteFeedbackModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Admin — Feedback search + rating filter + status filter + sort
+     */
+    const feedbackAdminList = document.getElementById("feedbackAdminList");
+
+    if (feedbackAdminList) {
+        const feedbackSearch = document.getElementById("feedbackSearch");
+        const feedbackRatingFilter = document.getElementById(
+            "feedbackRatingFilter",
+        );
+        const feedbackStatusButtons = document.querySelectorAll(
+            "#feedbackStatusFilter .filter-btn",
+        );
+        const feedbackSortSelect =
+            document.getElementById("feedbackSortSelect");
+        const feedbackNoMatches = document.getElementById("feedbackNoMatches");
+        let currentStatus = "all";
+
+        function applyFeedbackFilters() {
+            const query = (feedbackSearch ? feedbackSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const ratingValue = feedbackRatingFilter
+                ? feedbackRatingFilter.value
+                : "all";
+            const cards = feedbackAdminList.querySelectorAll(
+                ".feedback-admin-card",
+            );
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const matchesSearch = card.dataset.title.includes(query);
+                const matchesRating =
+                    ratingValue === "all" ||
+                    card.dataset.rating === ratingValue;
+                const matchesStatus =
+                    currentStatus === "all" ||
+                    card.dataset.status === currentStatus;
+                const shouldShow =
+                    matchesSearch && matchesRating && matchesStatus;
+
+                card.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (feedbackNoMatches) {
+                feedbackNoMatches.classList.toggle(
+                    "hidden",
+                    visibleCount !== 0,
+                );
+            }
+        }
+
+        function applyFeedbackSorting() {
+            const sortValue = feedbackSortSelect
+                ? feedbackSortSelect.value
+                : "recent";
+            const cards = Array.from(
+                feedbackAdminList.querySelectorAll(".feedback-admin-card"),
+            );
+
+            cards.sort(function (a, b) {
+                switch (sortValue) {
+                    case "highest":
+                        return (
+                            parseInt(b.dataset.rating, 10) -
+                            parseInt(a.dataset.rating, 10)
+                        );
+                    case "lowest":
+                        return (
+                            parseInt(a.dataset.rating, 10) -
+                            parseInt(b.dataset.rating, 10)
+                        );
+                    case "recent":
+                    default:
+                        return (
+                            parseInt(b.dataset.created, 10) -
+                            parseInt(a.dataset.created, 10)
+                        );
+                }
+            });
+
+            cards.forEach(function (card) {
+                feedbackAdminList.appendChild(card);
+            });
+        }
+
+        if (feedbackSearch) {
+            feedbackSearch.addEventListener("input", applyFeedbackFilters);
+        }
+
+        if (feedbackRatingFilter) {
+            feedbackRatingFilter.addEventListener(
+                "change",
+                applyFeedbackFilters,
+            );
+        }
+
+        feedbackStatusButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                feedbackStatusButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
+                currentStatus = btn.dataset.status;
+                applyFeedbackFilters();
+            });
+        });
+
+        if (feedbackSortSelect) {
+            feedbackSortSelect.addEventListener("change", applyFeedbackSorting);
+        }
+    }
+});

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnswerController as AdminAnswerController;
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseAlertController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketPriceController;
 use App\Http\Controllers\NewsController;
@@ -36,7 +38,8 @@ use Illuminate\Support\Facades\Route;
  Phase 8: Farming Tips + Saved Tips + Notifications (real modules)
  Phase 9: Crop Price Information (real module)
  Phase 10: Question & Answer Forum (real module)
- Phase 11: Agriculture News (real module — replaces news placeholder)
+ Phase 11: Agriculture News (real module)
+ Phase 12: Feedback System (real module — replaces feedback placeholder)
 */
 
 // Public Home Page
@@ -102,16 +105,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
     Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
-    /*
+    // Feedback System (Phase 12)
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    Route::put('/feedback/{feedback}', [FeedbackController::class, 'update'])->name('feedback.update');
+    Route::delete('/feedback/{feedback}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
 
-     Placeholder module routes (still Phase 3 stand-ins)
-
-       feedback → Phase 12    fertilizer → Phase 13
-    */
-    Route::get('/feedback', fn () => view('modules.coming-soon', ['title' => 'Feedback', 'icon' => '⭐']))->name('feedback.index');
+    // Placeholder module route — fertilizer → Phase 13
     Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
 
-    // Admin area (Diseases, Tips, Crop Prices, Q&A, and now News)
+    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, and now Feedback)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
 
@@ -125,6 +128,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/qa/{question}/answer', [AdminAnswerController::class, 'store'])->name('qa.answer');
 
         Route::resource('news', AdminNewsController::class)->except('show');
+
+        Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
+        Route::patch('/feedback/{feedback}/review', [AdminFeedbackController::class, 'markReviewed'])->name('feedback.review');
     });
 });
 
