@@ -14,7 +14,7 @@ class User extends Authenticatable
     /*
       The attributes that are mass assignable.
      
-     @var list<string>
+      @var list<string>
      */
     protected $fillable = [
         'name',
@@ -26,7 +26,7 @@ class User extends Authenticatable
     /*
       The attributes that should be hidden for serialization.
      
-     @var list<string>
+      @var list<string>
      */
     protected $hidden = [
         'password',
@@ -64,7 +64,7 @@ class User extends Authenticatable
     }
 
     /*
-      All reminders (tasks) created by this farmer.
+     All reminders (tasks) created by this farmer.
      */
     public function tasks()
     {
@@ -104,6 +104,14 @@ class User extends Authenticatable
     }
 
     /*
+      Fertilizer guides this user has published (admin accounts only).
+     */
+    public function publishedFertilizerGuides()
+    {
+        return $this->hasMany(Fertilizer::class, 'admin_id');
+    }
+
+    /*
       Tips this farmer has liked.
      */
     public function likedTips()
@@ -135,8 +143,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Answer::class, 'answer_likes')->withTimestamps();
     }
 
-    /*
-      Feedback this farmer has submitted.
+    /**
+     * Feedback this farmer has submitted.
      */
     public function feedback()
     {
