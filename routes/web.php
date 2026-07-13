@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AnswerController as AdminAnswerController;
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\Admin\FertilizerController as AdminFertilizerController;
 use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\CropController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiseaseAlertController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketPriceController;
 use App\Http\Controllers\NewsController;
@@ -25,21 +27,27 @@ use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 /*
-
- Web Routes — Krishi Bondhu
-
- Phase 1: Authentication & Profile
- Phase 2: Public Home Page + Contact form
- Phase 3: Farmer Dashboard + placeholder module routes
- Phase 4: Crop Management (real module)
- Phase 5: Reminder Calendar (real module)
- Phase 6: Disease Alerts (real module) + first slice of the Admin area
- Phase 7: Weather Information (real module)
- Phase 8: Farming Tips + Saved Tips + Notifications (real modules)
- Phase 9: Crop Price Information (real module)
- Phase 10: Question & Answer Forum (real module)
- Phase 11: Agriculture News (real module)
- Phase 12: Feedback System (real module — replaces feedback placeholder)
+|--------------------------------------------------------------------------
+| Web Routes — Krishi Bondhu
+|--------------------------------------------------------------------------
+| Phase 1: Authentication & Profile
+| Phase 2: Public Home Page + Contact form
+| Phase 3: Farmer Dashboard + placeholder module routes
+| Phase 4: Crop Management
+| Phase 5: Reminder Calendar
+| Phase 6: Disease Alerts + first slice of the Admin area
+| Phase 7: Weather Information
+| Phase 8: Farming Tips + Saved Tips + Notifications
+| Phase 9: Crop Price Information
+| Phase 10: Question & Answer Forum
+| Phase 11: Agriculture News
+| Phase 12: Feedback System
+| Phase 13: Fertilizer Guide — every placeholder module route is now gone.
+|
+| Next up (Phase 15): the unified Admin Panel shell — sidebar, admin
+| dashboard stats, and Farmer Management — wrapping all the admin
+| sub-modules built along the way (Diseases, Tips, Prices, Q&A, News,
+| Feedback, Fertilizer) under one consistent layout.
 */
 
 // Public Home Page
@@ -111,10 +119,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/feedback/{feedback}', [FeedbackController::class, 'update'])->name('feedback.update');
     Route::delete('/feedback/{feedback}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
 
-    // Placeholder module route — fertilizer → Phase 13
-    Route::get('/fertilizer', fn () => view('modules.coming-soon', ['title' => 'Fertilizer Guide', 'icon' => '🧪']))->name('fertilizer.index');
+    // Fertilizer Guide — farmer-facing browsing (Phase 13)
+    Route::get('/fertilizer', [FertilizerController::class, 'index'])->name('fertilizer.index');
+    Route::get('/fertilizer/{fertilizer}', [FertilizerController::class, 'show'])->name('fertilizer.show');
 
-    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, and now Feedback)
+    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, Feedback, and now Fertilizer)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
 
@@ -131,6 +140,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
         Route::patch('/feedback/{feedback}/review', [AdminFeedbackController::class, 'markReviewed'])->name('feedback.review');
+
+        Route::resource('fertilizers', AdminFertilizerController::class)->except('show');
     });
 });
 
