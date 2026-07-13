@@ -47,6 +47,10 @@
                        class="nav-link-admin {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
                         ⭐ Feedback
                     </a>
+                    <a href="{{ route('admin.fertilizers.index') }}"
+                       class="nav-link-admin {{ request()->routeIs('admin.fertilizers.*') ? 'active' : '' }}">
+                        🧪 Fertilizer
+                    </a>
                     <a href="{{ route('dashboard') }}" class="nav-link-admin">← Farmer Dashboard</a>
 
                     <form method="POST" action="{{ route('logout') }}" class="admin-logout-form">

@@ -19,7 +19,7 @@
             </a>
             <a href="{{ route('tips.index') }}"
                class="nav-link {{ request()->routeIs('tips.*') || request()->routeIs('saved-tips.*') ? 'active' : '' }}">
-                Farming Tips
+                Tips
             </a>
             <a href="{{ route('qa.index') }}"
                class="nav-link {{ request()->routeIs('qa.*') ? 'active' : '' }}">
@@ -33,8 +33,10 @@
                class="nav-link {{ request()->routeIs('feedback.*') ? 'active' : '' }}">
                 Feedback
             </a>
-            {{-- Crops, Weather, Reminders, Prices, Fertilizer Guide links
-                 will be appended here in the remaining phase --}}
+            <a href="{{ route('fertilizer.index') }}"
+               class="nav-link {{ request()->routeIs('fertilizer.*') ? 'active' : '' }}">
+                Fertilizer
+            </a>
         </div>
 
         @include('partials.notification-bell')

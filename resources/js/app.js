@@ -1667,3 +1667,120 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+/*
+   PHASE 13 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–12 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Live crop photo preview on the Admin Add/Edit Fertilizer forms
+     */
+    const fertilizerImageInput = document.getElementById("crop_image");
+    const fertilizerImagePreview = document.getElementById(
+        "fertilizerImagePreview",
+    );
+    const fertilizerImagePlaceholder = document.getElementById(
+        "fertilizerImagePlaceholder",
+    );
+
+    if (
+        fertilizerImageInput &&
+        fertilizerImagePreview &&
+        fertilizerImagePlaceholder
+    ) {
+        fertilizerImageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (readerEvent) {
+                fertilizerImagePreview.src = readerEvent.target.result;
+                fertilizerImagePreview.classList.remove("hidden");
+                fertilizerImagePlaceholder.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /*
+       Admin — Delete Fertilizer confirmation modal
+     */
+    const deleteFertilizerModal = document.getElementById(
+        "deleteFertilizerModal",
+    );
+    const deleteFertilizerForm = document.getElementById(
+        "deleteFertilizerForm",
+    );
+    const cancelDeleteFertilizerBtn = document.getElementById(
+        "cancelDeleteFertilizer",
+    );
+
+    if (deleteFertilizerModal && deleteFertilizerForm) {
+        document
+            .querySelectorAll("[data-open-delete-modal]")
+            .forEach(function (button) {
+                button.addEventListener("click", function () {
+                    deleteFertilizerForm.setAttribute(
+                        "action",
+                        button.dataset.deleteUrl,
+                    );
+                    deleteFertilizerModal.classList.remove("hidden");
+                });
+            });
+
+        if (cancelDeleteFertilizerBtn) {
+            cancelDeleteFertilizerBtn.addEventListener("click", function () {
+                deleteFertilizerModal.classList.add("hidden");
+            });
+        }
+
+        deleteFertilizerModal.addEventListener("click", function (event) {
+            if (event.target === deleteFertilizerModal) {
+                deleteFertilizerModal.classList.add("hidden");
+            }
+        });
+    }
+
+    /*
+       Farmer-facing — live search by crop name
+     */
+    const fertilizerGrid = document.getElementById("fertilizerGrid");
+
+    if (fertilizerGrid) {
+        const fertilizerSearch = document.getElementById("fertilizerSearch");
+        const fertilizerNoMatches = document.getElementById(
+            "fertilizerNoMatches",
+        );
+
+        function applyFertilizerSearch() {
+            const query = (fertilizerSearch ? fertilizerSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const cards = fertilizerGrid.querySelectorAll(".fertilizer-card");
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const shouldShow = card.dataset.title.includes(query);
+                card.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (fertilizerNoMatches) {
+                fertilizerNoMatches.classList.toggle(
+                    "hidden",
+                    visibleCount !== 0,
+                );
+            }
+        }
+
+        if (fertilizerSearch) {
+            fertilizerSearch.addEventListener("input", applyFertilizerSearch);
+        }
+    }
+});
