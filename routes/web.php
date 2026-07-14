@@ -22,6 +22,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QAController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SavedTipController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TipController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
@@ -42,12 +43,8 @@ use Illuminate\Support\Facades\Route;
 | Phase 10: Question & Answer Forum
 | Phase 11: Agriculture News
 | Phase 12: Feedback System
-| Phase 13: Fertilizer Guide — every placeholder module route is now gone.
-|
-| Next up (Phase 15): the unified Admin Panel shell — sidebar, admin
-| dashboard stats, and Farmer Management — wrapping all the admin
-| sub-modules built along the way (Diseases, Tips, Prices, Q&A, News,
-| Feedback, Fertilizer) under one consistent layout.
+| Phase 13: Fertilizer Guide
+| Phase 14: Search Everything (global search endpoint)
 */
 
 // Public Home Page
@@ -60,6 +57,9 @@ Route::middleware('auth')->group(function () {
 
     // Farmer Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Global Search (Phase 14)
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     // Profile: view (read-only) + edit (form) + update + delete account
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -123,7 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/fertilizer', [FertilizerController::class, 'index'])->name('fertilizer.index');
     Route::get('/fertilizer/{fertilizer}', [FertilizerController::class, 'show'])->name('fertilizer.show');
 
-    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, Feedback, and now Fertilizer)
+    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, Feedback, Fertilizer)
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
 
