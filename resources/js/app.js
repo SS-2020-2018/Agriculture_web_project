@@ -1784,3 +1784,382 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+/*
+   PHASE 14 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–13 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchTrigger = document.getElementById("searchTrigger");
+    const searchPanel = document.getElementById("searchPanel");
+    const searchInput = document.getElementById("globalSearchInput");
+
+    // Everything below only applies where the search panel exists
+    // (i.e. any authenticated page, since it lives in the navbar).
+    if (!searchTrigger || !searchPanel || !searchInput) {
+        return;
+    }
+
+    const searchUrl = searchInput.dataset.searchUrl;
+    const clearBtn = document.getElementById("clearSearchBtn");
+    const loadingSpinner = document.getElementById("searchLoadingSpinner");
+    const categoryFilter = document.getElementById("searchCategoryFilter");
+    const sortSelect = document.getElementById("searchSortSelect");
+    const resultsList = document.getElementById("searchResultsList");
+    const emptyState = document.getElementById("searchEmptyState");
+    const emptyQuerySpan = document.getElementById("searchEmptyQuery");
+    const searchHint = document.getElementById("searchHint");
+    const recentWrap = document.getElementById("searchRecentWrap");
+    const recentChips = document.getElementById("searchRecentChips");
+
+    const CATEGORY_ORDER = [
+        "crops",
+        "tips",
+        "saved_tips",
+        "questions",
+        "prices",
+        "news",
+        "diseases",
+        "fertilizers",
+        "reminders",
+        "feedback",
+    ];
+    const RECENT_KEY = "krishiBondhuRecentSearches";
+    const DEBOUNCE_MS = 350;
+
+    let debounceTimer = null;
+    let currentResults = null;
+    let lastQuery = "";
+
+    /*
+       Open / close the panel
+     */
+    function openPanel() {
+        searchPanel.classList.add("open");
+        searchInput.focus();
+        renderRecentSearches();
+    }
+
+    function closePanel() {
+        searchPanel.classList.remove("open");
+    }
+
+    searchTrigger.addEventListener("click", function (event) {
+        event.stopPropagation();
+        searchPanel.classList.contains("open") ? closePanel() : openPanel();
+    });
+
+    document.addEventListener("click", function (event) {
+        if (
+            !searchPanel.contains(event.target) &&
+            !searchTrigger.contains(event.target)
+        ) {
+            closePanel();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closePanel();
+        }
+    });
+
+    /*
+       Recent searches (sessionStorage — clears when the tab closes,
+       matching the spec's "during the current session" wording)
+     */
+    function getRecentSearches() {
+        try {
+            return JSON.parse(sessionStorage.getItem(RECENT_KEY) || "[]");
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function rememberSearch(query) {
+        let recent = getRecentSearches().filter(function (item) {
+            return item !== query;
+        });
+        recent.unshift(query);
+        recent = recent.slice(0, 6);
+        sessionStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+    }
+
+    function renderRecentSearches() {
+        const recent = getRecentSearches();
+
+        if (recent.length === 0 || searchInput.value.trim() !== "") {
+            recentWrap.classList.add("hidden");
+            return;
+        }
+
+        recentChips.innerHTML = recent
+            .map(function (term) {
+                return (
+                    '<button type="button" class="search-recent-chip" data-term="' +
+                    escapeHtml(term) +
+                    '">' +
+                    escapeHtml(term) +
+                    "</button>"
+                );
+            })
+            .join("");
+
+        recentWrap.classList.remove("hidden");
+
+        recentChips
+            .querySelectorAll(".search-recent-chip")
+            .forEach(function (chip) {
+                chip.addEventListener("click", function () {
+                    searchInput.value = chip.dataset.term;
+                    runSearch(chip.dataset.term);
+                });
+            });
+    }
+
+    /*
+       Escaping + highlighting helpers
+     */
+    function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function highlight(text, query) {
+        const escaped = escapeHtml(text);
+        if (!query) {
+            return escaped;
+        }
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp("(" + escapedQuery + ")", "gi");
+        return escaped.replace(regex, "<mark>$1</mark>");
+    }
+
+    const CATEGORY_ICONS = {
+        crops: "🌱",
+        tips: "💡",
+        saved_tips: "🔖",
+        questions: "❓",
+        prices: "💰",
+        news: "📰",
+        diseases: "🚨",
+        fertilizers: "🧪",
+        reminders: "📅",
+        feedback: "⭐",
+    };
+
+    const CATEGORY_LABELS = {
+        crops: "Crops",
+        tips: "Farming Tips",
+        saved_tips: "Saved Tips",
+        questions: "Question & Answer",
+        prices: "Crop Prices",
+        news: "Agriculture News",
+        diseases: "Disease Alerts",
+        fertilizers: "Fertilizer Guide",
+        reminders: "Reminders",
+        feedback: "Feedback",
+    };
+
+    /*
+       Sorting — flattens all results together, sorts them, then
+       regroups by category so sorting can also change WHICH category
+       appears first (e.g. "Newest" should surface the single most
+       recent result overall, even if every category only has one item).
+     */
+    function flattenResults(data) {
+        const flat = [];
+        CATEGORY_ORDER.forEach(function (key) {
+            const items = data.results[key];
+            if (!items) {
+                return;
+            }
+            items.forEach(function (item) {
+                const copy = Object.assign({}, item);
+                copy._category = key;
+                flat.push(copy);
+            });
+        });
+        return flat;
+    }
+
+    function sortFlatItems(flat, sortValue) {
+        const copy = flat.slice();
+
+        switch (sortValue) {
+            case "newest":
+                return copy.sort(function (a, b) {
+                    return (b.timestamp || 0) - (a.timestamp || 0);
+                });
+            case "oldest":
+                return copy.sort(function (a, b) {
+                    return (a.timestamp || 0) - (b.timestamp || 0);
+                });
+            case "az":
+                return copy.sort(function (a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+            case "relevance":
+            default:
+                return copy; // keep the default category-priority + backend order
+        }
+    }
+
+    /*
+       Rendering
+     */
+    function renderResults(data, query) {
+        currentResults = data;
+        const sortValue = sortSelect.value;
+
+        if (data.total === 0) {
+            resultsList.innerHTML = "";
+            emptyQuerySpan.textContent = query;
+            emptyState.classList.remove("hidden");
+            searchHint.classList.add("hidden");
+            recentWrap.classList.add("hidden");
+            return;
+        }
+
+        emptyState.classList.add("hidden");
+        searchHint.classList.add("hidden");
+        recentWrap.classList.add("hidden");
+
+        // Sort everything together first...
+        const flat = flattenResults(data);
+        const sorted = sortFlatItems(flat, sortValue);
+
+        // ...then regroup by category, using the ORDER categories first
+        // appear in the sorted list to decide which group renders first.
+        const grouped = {};
+        const categoryDisplayOrder = [];
+
+        sorted.forEach(function (item) {
+            if (!grouped[item._category]) {
+                grouped[item._category] = [];
+                categoryDisplayOrder.push(item._category);
+            }
+            grouped[item._category].push(item);
+        });
+
+        let html = "";
+
+        categoryDisplayOrder.forEach(function (key) {
+            const items = grouped[key];
+
+            html += '<div class="search-category-group">';
+            html +=
+                '<div class="search-category-heading">' +
+                CATEGORY_ICONS[key] +
+                " " +
+                CATEGORY_LABELS[key] +
+                "</div>";
+
+            items.forEach(function (item) {
+                html +=
+                    '<a href="' +
+                    item.url +
+                    '" class="search-result-item">' +
+                    '<span class="search-result-icon">' +
+                    item.icon +
+                    "</span>" +
+                    '<div class="search-result-body">' +
+                    '<p class="search-result-title">' +
+                    highlight(item.title, query) +
+                    "</p>" +
+                    '<p class="search-result-desc">' +
+                    highlight(item.description || "", query) +
+                    "</p>" +
+                    "</div>" +
+                    '<span class="search-result-date">' +
+                    (item.date || "") +
+                    "</span>" +
+                    "</a>";
+            });
+
+            html += "</div>";
+        });
+
+        resultsList.innerHTML = html;
+    }
+
+    /*
+       Fetching
+     */
+    function runSearch(query) {
+        lastQuery = query;
+        clearBtn.classList.toggle("hidden", query.length === 0);
+
+        if (query.trim().length < 2) {
+            resultsList.innerHTML = "";
+            emptyState.classList.add("hidden");
+            searchHint.classList.toggle("hidden", query.length === 0);
+            renderRecentSearches();
+            return;
+        }
+
+        searchHint.classList.add("hidden");
+        recentWrap.classList.add("hidden");
+        loadingSpinner.classList.remove("hidden");
+
+        const params = new URLSearchParams({
+            q: query,
+            category: categoryFilter.value,
+        });
+
+        fetch(searchUrl + "?" + params.toString(), {
+            headers: { Accept: "application/json" },
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                loadingSpinner.classList.add("hidden");
+                renderResults(data, query);
+                if (data.total > 0) {
+                    rememberSearch(query);
+                }
+            })
+            .catch(function () {
+                loadingSpinner.classList.add("hidden");
+                resultsList.innerHTML =
+                    '<p class="search-hint">Something went wrong. Please try again.</p>';
+            });
+    }
+
+    /*
+       Event bindings
+     */
+    searchInput.addEventListener("input", function () {
+        clearTimeout(debounceTimer);
+        const query = searchInput.value;
+        debounceTimer = setTimeout(function () {
+            runSearch(query);
+        }, DEBOUNCE_MS);
+    });
+
+    categoryFilter.addEventListener("change", function () {
+        if (lastQuery.trim().length >= 2) {
+            runSearch(lastQuery);
+        }
+    });
+
+    sortSelect.addEventListener("change", function () {
+        if (currentResults) {
+            renderResults(currentResults, lastQuery);
+        }
+    });
+
+    clearBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        clearBtn.classList.add("hidden");
+        resultsList.innerHTML = "";
+        emptyState.classList.add("hidden");
+        searchHint.classList.add("hidden");
+        searchInput.focus();
+        renderRecentSearches();
+    });
+});

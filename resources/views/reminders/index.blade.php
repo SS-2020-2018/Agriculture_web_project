@@ -108,6 +108,7 @@
                                 {{ $reminder->is_today ? 'reminder-today' : '' }}
                                 {{ $reminder->is_overdue ? 'reminder-overdue' : '' }}
                                 {{ $reminder->is_upcoming ? 'reminder-upcoming' : '' }}"
+                         id="reminder-{{ $reminder->id }}"
                          data-title="{{ strtolower($reminder->title) }}"
                          data-status="{{ $reminder->is_completed ? 'completed' : 'pending' }}"
                          data-date="{{ $reminder->reminder_date->format('Y-m-d') }}">

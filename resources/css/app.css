@@ -3887,3 +3887,267 @@ img {
     font-size: 13px;
     padding: 6px 16px;
 }
+
+/*
+   PHASE 14 ADDITIONS — append everything below to the end of your
+   existing resources/css/app.css. Additive only, nothing removed.
+ */
+
+.navbar-search {
+    position: relative;
+    margin-right: 6px;
+}
+
+.search-trigger {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: #eef3ee;
+    cursor: pointer;
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.search-trigger:hover {
+    transform: scale(1.06);
+}
+
+/*
+   Search panel
+ */
+
+.search-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    width: 480px;
+    max-width: 90vw;
+    background: var(--color-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 200;
+}
+
+.search-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}
+
+.search-input-icon {
+    font-size: 15px;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-loading-spinner {
+    font-size: 14px;
+}
+
+.search-clear-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--color-text-light);
+    padding: 2px 6px;
+}
+
+.search-clear-btn:hover {
+    color: var(--color-danger);
+}
+
+.search-controls-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.search-select {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    font-family: inherit;
+    font-size: 12.5px;
+    background: #fff;
+}
+
+/*
+   Results area
+ */
+
+.search-results-area {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.search-recent-wrap {
+    padding: 4px 4px 12px;
+}
+
+.search-recent-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-light);
+    margin-bottom: 8px;
+}
+
+.search-recent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.search-recent-chip {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-primary-dark);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.search-recent-chip:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.search-category-group {
+    margin-bottom: 14px;
+}
+
+.search-category-heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-light);
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.search-result-item:hover {
+    background: var(--color-bg);
+}
+
+.search-result-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.search-result-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.search-result-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 2px;
+}
+
+.search-result-desc {
+    font-size: 12.5px;
+    color: var(--color-text-light);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-result-date {
+    font-size: 11px;
+    color: var(--color-text-light);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.search-result-item mark {
+    background: #fff3c4;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+.search-empty-state,
+.search-hint {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--color-text-light);
+}
+
+.search-empty-state .empty-state-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.search-hint p,
+.search-empty-state p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/*
+   Responsive — Phase 14
+ */
+
+@media (max-width: 768px) {
+    .search-panel {
+        position: fixed;
+        top: 70px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+        transform: translateY(-8px);
+    }
+
+    .search-panel.open {
+        transform: translateY(0);
+    }
+}
