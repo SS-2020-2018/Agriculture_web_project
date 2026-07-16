@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactMessage extends Model
 {
-    /**
-     * Mass assignable attributes.
-     *
-     * @var list<string>
+    /*
+      Mass assignable attributes.
+     
+     @var list<string>
      */
     protected $fillable = [
         'name',

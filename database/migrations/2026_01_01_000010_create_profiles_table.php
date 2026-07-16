@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * Stores extended profile information separately from the `users`
-     * table, linked one-to-one via `user_id`. Deleting a user cascades
-     * and removes their profile automatically.
+    /*
+      Run the migrations.
+     
+      Stores extended profile information separately from the `users`
+      table, linked one-to-one via `user_id`. Deleting a user cascades
+      and removes their profile automatically.
      */
     public function up(): void
     {

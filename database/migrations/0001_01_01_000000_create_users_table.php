@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * We added a `role` column so every account is tagged as either
-     * a 'farmer' or an 'admin' right from registration.
+    /*
+      We added a `role` column so every account is tagged as either
+      a 'farmer' or an 'admin' right from registration.
      */
+
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -23,7 +24,11 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
+         /*
+          Migration -> Base class for all migrations.
+          Blueprint -> Used to define table columns.
+          Schema -> Used to create, modify, or delete database tables.
+         */
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -40,8 +45,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
+    /*
+     Reverse the migrations.
      */
     public function down(): void
     {

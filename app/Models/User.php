@@ -12,7 +12,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /*
-      The attributes that are mass assignable.
+      The attributes that are mass assignable. Note: account_status is
+      deliberately NOT here — it's only ever changed by an admin via
+      Admin\FarmerController::toggleStatus(), using direct property
+      assignment (same pattern as Task::is_completed, Question::status,
+      and Feedback::is_reviewed elsewhere in this app).
      
       @var list<string>
      */
@@ -47,8 +51,8 @@ class User extends Authenticatable
     }
 
     /*
-      A user (farmer or admin) has exactly one profile record
-      holding phone, address, district, profession, and photo.
+     A user (farmer or admin) has exactly one profile record
+     holding phone, address, district, profession, and photo.
      */
     public function profile()
     {
@@ -64,7 +68,7 @@ class User extends Authenticatable
     }
 
     /*
-     All reminders (tasks) created by this farmer.
+      All reminders (tasks) created by this farmer.
      */
     public function tasks()
     {
@@ -120,7 +124,7 @@ class User extends Authenticatable
     }
 
     /*
-      Tips this farmer has saved for later (independent snapshots).
+     Tips this farmer has saved for later (independent snapshots).
      */
     public function savedTips()
     {
@@ -143,8 +147,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Answer::class, 'answer_likes')->withTimestamps();
     }
 
-    /**
-     * Feedback this farmer has submitted.
+    /*
+      Feedback this farmer has submitted.
      */
     public function feedback()
     {
@@ -159,5 +163,13 @@ class User extends Authenticatable
     public function isFarmer(): bool
     {
         return $this->role === 'farmer';
+    }
+
+    /*
+     Suspended farmers are blocked at login — see LoginRequest::authenticate().
+     */
+    public function isSuspended(): bool
+    {
+        return $this->account_status === 'suspended';
     }
 }

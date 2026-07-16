@@ -2163,3 +2163,347 @@ document.addEventListener("DOMContentLoaded", function () {
         renderRecentSearches();
     });
 });
+
+/*
+   PHASE 15 ADDITIONS — append everything below to the end of your
+   existing resources/js/app.js. Independent DOMContentLoaded block, safe
+   to paste after the Phase 1–14 code already in that file.
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+       Sidebar toggle — collapses to icon-only on desktop, becomes an
+       off-canvas drawer with a backdrop on mobile.
+     */
+    const adminLayout = document.getElementById("adminLayout");
+    const sidebarToggle = document.getElementById("adminSidebarToggle");
+    const sidebarBackdrop = document.getElementById("adminSidebarBackdrop");
+
+    if (adminLayout && sidebarToggle) {
+        const MOBILE_BREAKPOINT = 900;
+
+        sidebarToggle.addEventListener("click", function () {
+            if (window.innerWidth <= MOBILE_BREAKPOINT) {
+                adminLayout.classList.toggle("sidebar-mobile-open");
+            } else {
+                adminLayout.classList.toggle("sidebar-collapsed");
+            }
+        });
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener("click", function () {
+                adminLayout.classList.remove("sidebar-mobile-open");
+            });
+        }
+
+        // If the window is resized past the breakpoint while the mobile
+        // drawer is open, close it so it doesn't get stuck open.
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > MOBILE_BREAKPOINT) {
+                adminLayout.classList.remove("sidebar-mobile-open");
+            }
+        });
+    }
+
+    /*
+       Admin topbar search — reuses the same /search endpoint from
+       Phase 14, rendered as a simple dropdown (no category/sort
+       controls needed here — this is a quick-jump tool, not the full
+       search experience).
+     */
+    const adminTopSearch = document.getElementById("adminTopSearch");
+    const adminSearchDropdown = document.getElementById("adminSearchDropdown");
+    const adminSearchResultsList = document.getElementById(
+        "adminSearchResultsList",
+    );
+    const adminSearchEmptyState = document.getElementById(
+        "adminSearchEmptyState",
+    );
+
+    if (adminTopSearch && adminSearchDropdown) {
+        const searchUrl = adminTopSearch.dataset.searchUrl;
+        let adminDebounceTimer = null;
+
+        const CATEGORY_ORDER = [
+            "crops",
+            "tips",
+            "saved_tips",
+            "questions",
+            "prices",
+            "news",
+            "diseases",
+            "fertilizers",
+            "reminders",
+            "feedback",
+        ];
+        const CATEGORY_ICONS = {
+            crops: "🌱",
+            tips: "💡",
+            saved_tips: "🔖",
+            questions: "❓",
+            prices: "💰",
+            news: "📰",
+            diseases: "🚨",
+            fertilizers: "🧪",
+            reminders: "📅",
+            feedback: "⭐",
+        };
+        const CATEGORY_LABELS = {
+            crops: "Crops",
+            tips: "Farming Tips",
+            saved_tips: "Saved Tips",
+            questions: "Question & Answer",
+            prices: "Crop Prices",
+            news: "Agriculture News",
+            diseases: "Disease Alerts",
+            fertilizers: "Fertilizer Guide",
+            reminders: "Reminders",
+            feedback: "Feedback",
+        };
+
+        function escapeHtml(str) {
+            const div = document.createElement("div");
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function renderAdminSearchResults(data) {
+            if (data.total === 0) {
+                adminSearchResultsList.innerHTML = "";
+                adminSearchEmptyState.classList.remove("hidden");
+                return;
+            }
+
+            adminSearchEmptyState.classList.add("hidden");
+
+            let html = "";
+            CATEGORY_ORDER.forEach(function (key) {
+                const items = data.results[key];
+                if (!items || items.length === 0) {
+                    return;
+                }
+
+                html += '<div class="search-category-group">';
+                html +=
+                    '<div class="search-category-heading">' +
+                    CATEGORY_ICONS[key] +
+                    " " +
+                    CATEGORY_LABELS[key] +
+                    "</div>";
+
+                items.forEach(function (item) {
+                    html +=
+                        '<a href="' +
+                        item.url +
+                        '" class="search-result-item">' +
+                        '<span class="search-result-icon">' +
+                        item.icon +
+                        "</span>" +
+                        '<div class="search-result-body">' +
+                        '<p class="search-result-title">' +
+                        escapeHtml(item.title) +
+                        "</p>" +
+                        '<p class="search-result-desc">' +
+                        escapeHtml(item.description || "") +
+                        "</p>" +
+                        "</div>" +
+                        '<span class="search-result-date">' +
+                        (item.date || "") +
+                        "</span>" +
+                        "</a>";
+                });
+
+                html += "</div>";
+            });
+
+            adminSearchResultsList.innerHTML = html;
+        }
+
+        adminTopSearch.addEventListener("input", function () {
+            clearTimeout(adminDebounceTimer);
+            const query = adminTopSearch.value.trim();
+
+            if (query.length < 2) {
+                adminSearchDropdown.classList.remove("open");
+                return;
+            }
+
+            adminDebounceTimer = setTimeout(function () {
+                fetch(
+                    searchUrl +
+                        "?" +
+                        new URLSearchParams({
+                            q: query,
+                            category: "all",
+                        }).toString(),
+                    {
+                        headers: { Accept: "application/json" },
+                    },
+                )
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        renderAdminSearchResults(data);
+                        adminSearchDropdown.classList.add("open");
+                    });
+            }, 350);
+        });
+
+        document.addEventListener("click", function (event) {
+            if (
+                !adminSearchDropdown.contains(event.target) &&
+                event.target !== adminTopSearch
+            ) {
+                adminSearchDropdown.classList.remove("open");
+            }
+        });
+    }
+
+    /*
+       Farmer Management — search + status filter + sort
+     */
+    const farmerTable = document.getElementById("farmerTable");
+
+    if (farmerTable) {
+        const farmerSearch = document.getElementById("farmerSearch");
+        const farmerStatusButtons = document.querySelectorAll(
+            "#farmerStatusFilter .filter-btn",
+        );
+        const farmerSortSelect = document.getElementById("farmerSortSelect");
+        const farmerNoMatches = document.getElementById("farmerNoMatches");
+        const tbody = farmerTable.querySelector("tbody");
+        let currentStatus = "all";
+
+        function applyFarmerFilters() {
+            const query = (farmerSearch ? farmerSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const rows = tbody.querySelectorAll(".farmer-row");
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matchesSearch = row.dataset.title.includes(query);
+                const matchesStatus =
+                    currentStatus === "all" ||
+                    row.dataset.status === currentStatus;
+                const shouldShow = matchesSearch && matchesStatus;
+
+                row.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (farmerNoMatches) {
+                farmerNoMatches.classList.toggle("hidden", visibleCount !== 0);
+            }
+        }
+
+        function applyFarmerSorting() {
+            const sortValue = farmerSortSelect
+                ? farmerSortSelect.value
+                : "recent";
+            const rows = Array.from(tbody.querySelectorAll(".farmer-row"));
+
+            rows.sort(function (a, b) {
+                switch (sortValue) {
+                    case "oldest":
+                        return (
+                            parseInt(a.dataset.created, 10) -
+                            parseInt(b.dataset.created, 10)
+                        );
+                    case "az":
+                        return a.dataset.name.localeCompare(b.dataset.name);
+                    case "recent":
+                    default:
+                        return (
+                            parseInt(b.dataset.created, 10) -
+                            parseInt(a.dataset.created, 10)
+                        );
+                }
+            });
+
+            rows.forEach(function (row) {
+                tbody.appendChild(row);
+            });
+        }
+
+        if (farmerSearch) {
+            farmerSearch.addEventListener("input", applyFarmerFilters);
+        }
+
+        farmerStatusButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                farmerStatusButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
+                currentStatus = btn.dataset.status;
+                applyFarmerFilters();
+            });
+        });
+
+        if (farmerSortSelect) {
+            farmerSortSelect.addEventListener("change", applyFarmerSorting);
+        }
+    }
+});
+
+/*
+   PHASE 15b ADDITIONS (Contact Messages) — append everything below to the
+   end of your existing resources/js/app.js. 
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const messageAdminList = document.getElementById("messageAdminList");
+
+    if (messageAdminList) {
+        const messageSearch = document.getElementById("messageSearch");
+        const messageStatusButtons = document.querySelectorAll(
+            "#messageStatusFilter .filter-btn",
+        );
+        const messageNoMatches = document.getElementById("messageNoMatches");
+        let currentStatus = "all";
+
+        function applyMessageFilters() {
+            const query = (messageSearch ? messageSearch.value : "")
+                .toLowerCase()
+                .trim();
+            const rows = messageAdminList.querySelectorAll(".qa-admin-row");
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const matchesSearch = row.dataset.title.includes(query);
+                const matchesStatus =
+                    currentStatus === "all" ||
+                    row.dataset.status === currentStatus;
+                const shouldShow = matchesSearch && matchesStatus;
+
+                row.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleCount++;
+                }
+            });
+
+            if (messageNoMatches) {
+                messageNoMatches.classList.toggle("hidden", visibleCount !== 0);
+            }
+        }
+
+        if (messageSearch) {
+            messageSearch.addEventListener("input", applyMessageFilters);
+        }
+
+        messageStatusButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                messageStatusButtons.forEach(function (b) {
+                    b.classList.remove("active");
+                });
+                btn.classList.add("active");
+                currentStatus = btn.dataset.status;
+                applyMessageFilters();
+            });
+        });
+    }
+});

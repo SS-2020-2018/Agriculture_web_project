@@ -49,7 +49,7 @@ class CropController extends Controller
         $validated['image'] = $request->file('image')->store('crop-images', 'public');
         $validated['user_id'] = $request->user()->id;
 
-        Crop::create($validated);
+        Crop::create($validated); // Store the new crop in the database
 
         return redirect()->route('crops.index')->with('status', 'crop-added');
     }
@@ -59,9 +59,9 @@ class CropController extends Controller
      */
     public function show(Crop $crop): View
     {
-        Gate::authorize('view', $crop);
+        Gate::authorize('view', $crop); // Ensure the authenticated farmer owns this crop
 
-        return view('crops.show', compact('crop'));
+        return view('crops.show', compact('crop')); // Display the crop details view
     }
 
     /*

@@ -11,10 +11,7 @@ class StoreCropRequest extends FormRequest
         // Any authenticated farmer may register a crop for themselves.
         return true;
     }
-
-    /*
-     @return array<string, mixed>
-     */
+    
     public function rules(): array
     {
         return [
@@ -27,10 +24,7 @@ class StoreCropRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:2000'],
         ];
     }
-
-    /*
-     @return array<string, string>
-     */
+    /*@return array<string, string>*/
     public function messages(): array
     {
         return [

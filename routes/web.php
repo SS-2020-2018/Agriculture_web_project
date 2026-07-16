@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AnswerController as AdminAnswerController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DiseaseController as AdminDiseaseController;
+use App\Http\Controllers\Admin\FarmerController as AdminFarmerController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FertilizerController as AdminFertilizerController;
 use App\Http\Controllers\Admin\MarketPriceController as AdminMarketPriceController;
@@ -28,23 +31,25 @@ use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes — Krishi Bondhu
-|--------------------------------------------------------------------------
-| Phase 1: Authentication & Profile
-| Phase 2: Public Home Page + Contact form
-| Phase 3: Farmer Dashboard + placeholder module routes
-| Phase 4: Crop Management
-| Phase 5: Reminder Calendar
-| Phase 6: Disease Alerts + first slice of the Admin area
-| Phase 7: Weather Information
-| Phase 8: Farming Tips + Saved Tips + Notifications
-| Phase 9: Crop Price Information
-| Phase 10: Question & Answer Forum
-| Phase 11: Agriculture News
-| Phase 12: Feedback System
-| Phase 13: Fertilizer Guide
-| Phase 14: Search Everything (global search endpoint)
+
+Web Routes — Krishi Bondhu
+
+Phase 1: Authentication & Profile
+Phase 2: Public Home Page + Contact form
+Phase 3: Farmer Dashboard + placeholder module routes
+Phase 4: Crop Management
+Phase 5: Reminder Calendar
+Phase 6: Disease Alerts + first slice of the Admin area
+Phase 7: Weather Information
+Phase 8: Farming Tips + Saved Tips + Notifications
+Phase 9: Crop Price Information
+Phase 10: Question & Answer Forum
+Phase 11: Agriculture News
+Phase 12: Feedback System
+Phase 13: Fertilizer Guide
+Phase 14: Search Everything
+Phase 15: Unified Admin Panel — Dashboard + Farmer Management
+Phase 15b: Admin — Contact Messages 
 */
 
 // Public Home Page
@@ -55,11 +60,13 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 Route::middleware('auth')->group(function () {
 
-    // Farmer Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
 
     // Global Search (Phase 14)
     Route::get('/search', [SearchController::class, 'search'])->name('search');
+
+    // Farmer Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile: view (read-only) + edit (form) + update + delete account
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -123,8 +130,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/fertilizer', [FertilizerController::class, 'index'])->name('fertilizer.index');
     Route::get('/fertilizer/{fertilizer}', [FertilizerController::class, 'show'])->name('fertilizer.show');
 
-    // Admin area (Diseases, Tips, Crop Prices, Q&A, News, Feedback, Fertilizer)
+    /*
+    
+    Admin Panel (Phase 15 unifies everything built in Phases 6–13;
+    Phase 15b adds Contact Messages)
+    
+    */
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/farmers', [AdminFarmerController::class, 'index'])->name('farmers.index');
+        Route::get('/farmers/{farmer}', [AdminFarmerController::class, 'show'])->name('farmers.show');
+        Route::patch('/farmers/{farmer}/toggle-status', [AdminFarmerController::class, 'toggleStatus'])->name('farmers.toggle-status');
+        Route::patch('/crops/{crop}/feedback', [AdminFarmerController::class, 'giveCropFeedback'])->name('crops.feedback');
+
         Route::resource('diseases', AdminDiseaseController::class)->except('show');
 
         Route::resource('tips', AdminTipController::class)->except('show');
@@ -142,6 +161,11 @@ Route::middleware('auth')->group(function () {
         Route::patch('/feedback/{feedback}/review', [AdminFeedbackController::class, 'markReviewed'])->name('feedback.review');
 
         Route::resource('fertilizers', AdminFertilizerController::class)->except('show');
+
+        // Contact Messages (Phase 15b)
+        Route::get('/contact-messages', [AdminContactMessageController::class, 'index'])->name('contact.index');
+        Route::get('/contact-messages/{message}', [AdminContactMessageController::class, 'show'])->name('contact.show');
+        Route::delete('/contact-messages/{message}', [AdminContactMessageController::class, 'destroy'])->name('contact.destroy');
     });
 });
 
