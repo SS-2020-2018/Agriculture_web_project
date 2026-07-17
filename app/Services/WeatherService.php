@@ -142,7 +142,7 @@ class WeatherService
 
             'condition' => $data['weather'][0]['main'] ?? 'N/A',
             'description' => ucfirst($data['weather'][0]['description'] ?? ''),
-            'icon_url' => "https://openweathermap.org/img/wn/{$icon}@2x.png",
+            'icon_url' => "https://openweathermap.org/img/wn/{$icon}@2x.png", 
 
             'humidity' => $data['main']['humidity'] ?? null,
             'pressure' => $data['main']['pressure'] ?? null,
@@ -151,7 +151,7 @@ class WeatherService
 
             'wind_speed' => $data['wind']['speed'] ?? null,
             'wind_direction' => $this->windDirectionLabel($data['wind']['deg'] ?? null),
-
+            //Carbon is converting a Unix timestamp into a readable date and time object.
             'sunrise' => isset($data['sys']['sunrise'])
                 ? Carbon::createFromTimestamp($data['sys']['sunrise'], 'UTC')->addSeconds($tzOffsetSeconds)->format('h:i A')
                 : 'N/A',
@@ -171,7 +171,6 @@ class WeatherService
         if ($degrees === null) {
             return 'N/A';
         }
-
         $directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
         $index = (int) round($degrees / 22.5) % 16;
 

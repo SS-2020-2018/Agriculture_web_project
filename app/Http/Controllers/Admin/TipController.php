@@ -70,8 +70,7 @@ class TipController extends Controller
     /*
      Returns the list of farmers who liked this tip, for the "click the
      like count" popup in the admin table. Loaded via fetch() rather
-     than server-rendered per tip, since most tips will never have this
-     modal opened.
+     than server-rendered per tip
      */
     public function likers(Tip $tip): JsonResponse
     {

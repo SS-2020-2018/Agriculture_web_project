@@ -34,7 +34,7 @@
     @if($weather)
         <div class="weather-location-heading">
             <h3>{{ $weather['city'] }}{{ $weather['country'] ? ', '.$weather['country'] : '' }}</h3>
-            <span>{{ now()->format('l, d M Y — h:i A') }}</span>
+            <span>{{ now()->format('l, d M Y — h:i A') }}</span>  {{-- now() is a helper function in Laravel --}}
         </div>
 
         <div class="weather-grid">

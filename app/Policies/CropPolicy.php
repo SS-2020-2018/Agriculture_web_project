@@ -25,7 +25,6 @@ class CropPolicy
     {
         return $user->id === $crop->user_id;
     }
-
     /*
      Only the owning farmer can delete their crop.
     */

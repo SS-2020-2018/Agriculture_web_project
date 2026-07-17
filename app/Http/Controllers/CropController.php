@@ -59,7 +59,7 @@ class CropController extends Controller
      */
     public function show(Crop $crop): View
     {
-        Gate::authorize('view', $crop); // Ensure the authenticated farmer owns this crop
+        Gate::authorize('view', $crop); // From crop policy, ensure the authenticated farmer owns this crop
 
         return view('crops.show', compact('crop')); // Display the crop details view
     }
@@ -79,7 +79,7 @@ class CropController extends Controller
      */
     public function update(UpdateCropRequest $request, Crop $crop): RedirectResponse
     {
-        Gate::authorize('update', $crop);
+        Gate::authorize('update', $crop); // From crop policy, ensure the authenticated farmer owns this crop
 
         $validated = $request->validated();
 

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\WeatherService;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Services\WeatherService; //Handles API calls to OpenWeatherMap and IP-API
+use Illuminate\Http\Request; //Handles the incoming HTTP request
+use Illuminate\View\View; 
 
 class WeatherController extends Controller
 {
     public function __construct(private readonly WeatherService $weatherService)
     {
+        //Laravel automatically creates a WeatherService object and injects it into the controller.
+        //private readonly WeatherService $weatherService creates a property named: $this->weatherService 
     }
 
     /*
@@ -39,7 +41,6 @@ class WeatherController extends Controller
 
         if (! empty($location)) {
             $weather = $this->weatherService->getCurrentWeather($location['lat'], $location['lon']);
-
             if (! $weather) {
                 $errorMessage = 'The weather service is temporarily unavailable. Please try again in a moment.';
             } else {
