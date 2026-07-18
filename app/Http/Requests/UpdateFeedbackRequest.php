@@ -12,7 +12,6 @@ class UpdateFeedbackRequest extends FormRequest
         // controller via Gate::authorize('update', $feedback).
         return true;
     }
-
     /*
       @return array<string, mixed>
      */
@@ -23,7 +22,6 @@ class UpdateFeedbackRequest extends FormRequest
             'comment' => ['required', 'string', 'max:1000'],
         ];
     }
-
     /*
       @return array<string, string>
      */

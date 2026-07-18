@@ -6,14 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feedback extends Model
 {
-    /*
-     "Feedback" is uncountable in English (no distinct plural form) —
-     spelled out explicitly to avoid any Eloquent pluralization guessing
-      issues, same lesson learned from SavedTip (Phase 8) and News
-      (Phase 11).
-     */
     protected $table = 'feedback';
-
     /*
       @var list<string>
      */
@@ -35,7 +28,6 @@ class Feedback extends Model
     {
         return $this->belongsTo(User::class);
     }
-
     /*
       A farmer may only edit/delete their own feedback before an admin
       has reviewed it — used by FeedbackPolicy and to conditionally show

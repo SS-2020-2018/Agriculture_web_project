@@ -9,10 +9,10 @@ use Illuminate\View\View;
 
 class ContactMessageController extends Controller
 {
-    /**
-     * List every message submitted through the public Home Page contact
-     * form. Search/filter happen client-side in JS, consistent with the
-     * rest of the admin area.
+    /*
+      List every message submitted through the public Home Page contact
+      form. Search/filter happen client-side in JS, consistent with the
+      rest of the admin area.
      */
     public function index(): View
     {
@@ -23,10 +23,9 @@ class ContactMessageController extends Controller
             'unreadCount' => $messages->where('is_read', false)->count(),
         ]);
     }
-
-    /**
-     * View a single message in full, marking it read the moment an
-     * admin opens it.
+    /*
+      View a single message in full, marking it read the moment an
+      admin opens it.
      */
     public function show(ContactMessage $message): View
     {

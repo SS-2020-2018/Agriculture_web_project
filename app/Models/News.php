@@ -6,14 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    /*
-      "News" is a famously irregular English plural/singular, so rather
-      than trust Eloquent's pluralizer to guess the table name correctly,
-      we spell it out explicitly (same lesson learned from the
-      SavedTip/save_tips mismatch back in Phase 8).
-     */
     protected $table = 'news';
-
     /*
       @var list<string>
      */

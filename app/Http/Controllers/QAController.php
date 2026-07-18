@@ -39,15 +39,11 @@ class QAController extends Controller
     public function store(StoreQuestionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('question-images', 'public');
         }
-
         $validated['user_id'] = $request->user()->id;
-
         Question::create($validated);
-
         return redirect()->route('qa.index')->with('status', 'question-submitted');
     }
 
@@ -66,7 +62,6 @@ class QAController extends Controller
             $answer->likers()->attach($farmer->id);
             $liked = true;
         }
-
         return response()->json([
             'liked' => $liked,
             'likes_count' => $answer->likers()->count(),

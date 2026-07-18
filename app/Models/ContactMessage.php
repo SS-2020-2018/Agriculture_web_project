@@ -8,7 +8,6 @@ class ContactMessage extends Model
 {
     /*
       Mass assignable attributes.
-     
      @var list<string>
      */
     protected $fillable = [

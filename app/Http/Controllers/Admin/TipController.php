@@ -36,7 +36,6 @@ class TipController extends Controller
         $validated['admin_id'] = $request->user()->id;
 
         Tip::create($validated);
-
         return redirect()->route('admin.tips.index')->with('status', 'tip-added');
     }
 

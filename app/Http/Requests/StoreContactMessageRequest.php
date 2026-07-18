@@ -6,15 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreContactMessageRequest extends FormRequest
 {
-    
      // Anyone (guest or authenticated) may submit the contact form.
     public function authorize(): bool
     {
         return true;
     }
-
-    /**
-     * @return array<string, mixed>
+    /*
+      @return array<string, mixed>
      */
     public function rules(): array
     {

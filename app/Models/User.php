@@ -141,7 +141,8 @@ class User extends Authenticatable
 
     /*
       Answers this farmer has liked.
-     */
+    */
+    
     public function likedAnswers()
     {
         return $this->belongsToMany(Answer::class, 'answer_likes')->withTimestamps();
@@ -149,7 +150,8 @@ class User extends Authenticatable
 
     /*
       Feedback this farmer has submitted.
-     */
+    */
+
     public function feedback()
     {
         return $this->hasMany(Feedback::class);
@@ -167,7 +169,8 @@ class User extends Authenticatable
 
     /*
      Suspended farmers are blocked at login — see LoginRequest::authenticate().
-     */
+    */
+     
     public function isSuspended(): bool
     {
         return $this->account_status === 'suspended';

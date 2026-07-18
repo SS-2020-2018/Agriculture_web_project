@@ -12,9 +12,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the authenticated farmer's read-only "View Profile" page.
-     */
     public function show(Request $request): View
     {
         $user = $request->user()->load('profile');
@@ -22,9 +19,6 @@ class ProfileController extends Controller
         return view('profile.show', ['user' => $user]);
     }
 
-    /**
-     * Display the "Edit Profile" form.
-     */
     public function edit(Request $request): View
     {
         $user = $request->user()->load('profile');
@@ -32,10 +26,6 @@ class ProfileController extends Controller
         return view('profile.edit', ['user' => $user]);
     }
 
-    /**
-     * Update the user's core account info (name/email) and their
-     * linked profile record (phone/address/district/profession/photo).
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
@@ -80,9 +70,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    /**
-     * Permanently delete the user's account (and cascade-deletes their profile).
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

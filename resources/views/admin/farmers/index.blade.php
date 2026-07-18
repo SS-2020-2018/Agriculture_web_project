@@ -45,6 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach($farmers as $farmer)
                         <tr class="farmer-row"
                             data-title="{{ strtolower($farmer->name.' '.$farmer->email) }}"

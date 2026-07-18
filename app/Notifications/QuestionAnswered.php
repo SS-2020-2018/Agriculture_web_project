@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Notifications;
-
 use App\Models\Question;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -10,11 +8,9 @@ use Illuminate\Support\Str;
 class QuestionAnswered extends Notification
 {
     use Queueable;
-
     public function __construct(private readonly Question $question)
     {
     }
-
     /*
       @return array<int, string>
      */
@@ -22,7 +18,6 @@ class QuestionAnswered extends Notification
     {
         return ['database'];
     }
-
     /*
       @return array<string, mixed>
      */

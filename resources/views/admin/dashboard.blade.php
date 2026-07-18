@@ -26,6 +26,7 @@
                 <span class="admin-stat-label">Weather</span>
             </div>
         </a>
+
         <a href="{{ route('admin.farmers.index') }}" class="admin-stat-card admin-stat-green">
             <span class="admin-stat-icon">🧑‍🌾</span>
             <div>
@@ -33,6 +34,7 @@
                 <span class="admin-stat-label">Total Farmers</span>
             </div>
         </a>
+
         <a href="{{ route('admin.farmers.index') }}" class="admin-stat-card admin-stat-teal">
             <span class="admin-stat-icon">🌱</span>
             <div>
@@ -40,6 +42,7 @@
                 <span class="admin-stat-label">Registered Crops</span>
             </div>
         </a>
+
         <a href="{{ route('admin.qa.index') }}" class="admin-stat-card admin-stat-orange">
             <span class="admin-stat-icon">❓</span>
             <div>
@@ -47,6 +50,7 @@
                 <span class="admin-stat-label">Today's Questions</span>
             </div>
         </a>
+
         <a href="{{ route('admin.news.index') }}" class="admin-stat-card admin-stat-cyan">
             <span class="admin-stat-icon">📰</span>
             <div>
@@ -54,6 +58,7 @@
                 <span class="admin-stat-label">News Articles</span>
             </div>
         </a>
+
         <a href="{{ route('admin.feedback.index') }}" class="admin-stat-card admin-stat-pink">
             <span class="admin-stat-icon">⭐</span>
             <div>
@@ -61,6 +66,7 @@
                 <span class="admin-stat-label">Total Feedback</span>
             </div>
         </a>
+
         <a href="{{ route('admin.diseases.index') }}" class="admin-stat-card admin-stat-red">
             <span class="admin-stat-icon">🚨</span>
             <div>
@@ -68,6 +74,7 @@
                 <span class="admin-stat-label">Disease Records</span>
             </div>
         </a>
+
         <a href="{{ route('admin.fertilizers.index') }}" class="admin-stat-card admin-stat-purple">
             <span class="admin-stat-icon">🧪</span>
             <div>
@@ -75,6 +82,7 @@
                 <span class="admin-stat-label">Fertilizer Records</span>
             </div>
         </a>
+
         <a href="{{ route('admin.tips.index') }}" class="admin-stat-card admin-stat-yellow">
             <span class="admin-stat-icon">💡</span>
             <div>
@@ -82,6 +90,7 @@
                 <span class="admin-stat-label">Farming Tips</span>
             </div>
         </a>
+
         <a href="{{ route('admin.prices.index') }}" class="admin-stat-card admin-stat-indigo">
             <span class="admin-stat-icon">💰</span>
             <div>
@@ -89,6 +98,7 @@
                 <span class="admin-stat-label">Crop Price Records</span>
             </div>
         </a>
+
         <a href="{{ route('admin.contact.index') }}" class="admin-stat-card admin-stat-teal">
             <span class="admin-stat-icon">✉️</span>
             <div>
@@ -96,15 +106,18 @@
                 <span class="admin-stat-label">Unread Messages</span>
             </div>
         </a>
+
     </div>
 
     <div class="admin-activity-grid">
 
         <div class="admin-activity-card">
+
             <div class="admin-activity-header">
                 <h3>Recent Farmer Registrations</h3>
                 <a href="{{ route('admin.farmers.index') }}" class="admin-view-all-link">View All →</a>
             </div>
+
             @forelse($recentFarmers as $farmer)
                 <a href="{{ route('admin.farmers.show', $farmer) }}" class="admin-activity-row">
                     @if($farmer->profile && $farmer->profile->photo)
@@ -120,13 +133,16 @@
             @empty
                 <p class="admin-activity-empty">No farmers registered yet.</p>
             @endforelse
+
         </div>
 
         <div class="admin-activity-card">
+
             <div class="admin-activity-header">
                 <h3>Recent Feedback</h3>
                 <a href="{{ route('admin.feedback.index') }}" class="admin-view-all-link">View All →</a>
             </div>
+
             @forelse($recentFeedback as $entry)
                 <div class="admin-activity-row">
                     <div class="star-display">
@@ -142,6 +158,7 @@
             @empty
                 <p class="admin-activity-empty">No feedback submitted yet.</p>
             @endforelse
+            
         </div>
 
         <div class="admin-activity-card">
@@ -207,7 +224,7 @@
                 <a href="{{ route('admin.contact.show', $message) }}" class="admin-activity-row">
                     <span class="admin-activity-row-icon">{{ $message->is_read ? '📖' : '✉️' }}</span>
                     <div class="admin-activity-row-body">
-                        <strong>{{ $message->name }}{{ $message->is_read ? '' : ' (New)' }}</strong>
+                        <strong>{{ $message->name }}{{ $message->is_read ? ' (Read)' : ' (New)' }}</strong>
                         <span>{{ $message->subject ?: \Illuminate\Support\Str::limit($message->message, 40) }}</span>
                     </div>
                 </a>

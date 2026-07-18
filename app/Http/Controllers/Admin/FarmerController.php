@@ -11,10 +11,10 @@ use Illuminate\View\View;
 
 class FarmerController extends Controller
 {
-    /**
-     * List every farmer account. Search/filter/sort happen client-side
-     * in JS, consistent with the rest of the admin area.
-     */
+    /*
+      List every farmer account. Search/filter/sort happen client-side
+      in JS, consistent with the rest of the admin area.
+    */
     public function index(): View
     {
         $farmers = User::where('role', 'farmer')
@@ -26,11 +26,10 @@ class FarmerController extends Controller
         return view('admin.farmers.index', compact('farmers'));
     }
 
-    /**
-     * Full profile page for one farmer: personal info + every crop
-     * they've registered, with an inline feedback form on each crop.
-     * This is also where the admin_feedback field on crops (left as a
-     * TODO all the way back in Phase 4) finally gets a UI.
+    /*
+      Full profile page for one farmer: personal info + every crop
+      they've registered, with an inline feedback form on each crop.
+      This is also where the admin_feedback field on crops.
      */
     public function show(User $farmer): View
     {
@@ -42,9 +41,9 @@ class FarmerController extends Controller
         return view('admin.farmers.show', compact('farmer', 'crops'));
     }
 
-    /**
-     * Suspend or reactivate a farmer's account. Suspended accounts are
-     * blocked at login — see LoginRequest::authenticate().
+    /*
+      Suspend or reactivate a farmer's account. Suspended accounts are
+      blocked at login — see LoginRequest::authenticate().
      */
     public function toggleStatus(User $farmer): RedirectResponse
     {
@@ -56,12 +55,13 @@ class FarmerController extends Controller
         return back()->with('status', $farmer->isSuspended() ? 'farmer-suspended' : 'farmer-reactivated');
     }
 
-    /**
-     * Leave (or update) admin feedback on a specific crop. Per the
-     * spec, admins can give feedback but never edit/delete a farmer's
-     * crop record directly — this is the only write access admins have
-     * to the crops table.
-     */
+    /*
+      Leave (or update) admin feedback on a specific crop. Per the
+      spec, admins can give feedback but never edit/delete a farmer's
+      crop record directly — this is the only write access admins have
+      to the crops table.
+    */
+      
     public function giveCropFeedback(Request $request, Crop $crop): RedirectResponse
     {
         $validated = $request->validate([

@@ -18,7 +18,6 @@ class QuestionController extends Controller
 
         return view('admin.qa.index', compact('questions'));
     }
-
     /*
       Full conversation page: the question, any existing answers, and
       the reply form.

@@ -1400,9 +1400,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*
-   PHASE 12 ADDITIONS — append everything below to the end of your
-   existing resources/js/app.js. Independent DOMContentLoaded block, safe
-   to paste after the Phase 1–11 code already in that file.
+   PHASE 12 ADDITIONS
  */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1786,9 +1784,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*
-   PHASE 14 ADDITIONS — append everything below to the end of your
-   existing resources/js/app.js. Independent DOMContentLoaded block, safe
-   to paste after the Phase 1–13 code already in that file.
+   PHASE 14 ADDITIONS 
  */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1827,17 +1823,17 @@ document.addEventListener("DOMContentLoaded", function () {
         "feedback",
     ];
     const RECENT_KEY = "krishiBondhuRecentSearches";
-    const DEBOUNCE_MS = 350;
+    const DEBOUNCE_MS = 350;  // milliseconds to wait after the user stops typing before sending the search request
 
-    let debounceTimer = null;
-    let currentResults = null;
+    let debounceTimer = null;  // timer ID for the debounce timeout
+    let currentResults = null;  // the most recent search results data
     let lastQuery = "";
 
     /*
        Open / close the panel
      */
     function openPanel() {
-        searchPanel.classList.add("open");
+        searchPanel.classList.add("open"); // css panel disply:hidden to open
         searchInput.focus();
         renderRecentSearches();
     }
@@ -2451,8 +2447,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*
-   PHASE 15b ADDITIONS (Contact Messages) — append everything below to the
-   end of your existing resources/js/app.js. 
+   PHASE 15b ADDITIONS (Contact Messages)
  */
 
 document.addEventListener("DOMContentLoaded", function () {

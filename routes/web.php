@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
     // Question & Answer Forum — farmer-facing (Phase 10)
     Route::get('/qa', [QAController::class, 'index'])->name('qa.index');
     Route::post('/qa', [QAController::class, 'store'])->name('qa.store');
+
     Route::post('/qa/answers/{answer}/like', [QAController::class, 'toggleAnswerLike'])->name('qa.answers.like');
 
     // Agriculture News — farmer-facing browsing (Phase 11)
@@ -125,6 +126,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::put('/feedback/{feedback}', [FeedbackController::class, 'update'])->name('feedback.update');
     Route::delete('/feedback/{feedback}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
+
 
     // Fertilizer Guide — farmer-facing browsing (Phase 13)
     Route::get('/fertilizer', [FertilizerController::class, 'index'])->name('fertilizer.index');
@@ -152,12 +154,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('prices', AdminMarketPriceController::class)->except('show');
 
         Route::get('/qa', [AdminQuestionController::class, 'index'])->name('qa.index');
+
         Route::get('/qa/{question}', [AdminQuestionController::class, 'show'])->name('qa.show');
         Route::post('/qa/{question}/answer', [AdminAnswerController::class, 'store'])->name('qa.answer');
 
         Route::resource('news', AdminNewsController::class)->except('show');
 
         Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
+
         Route::patch('/feedback/{feedback}/review', [AdminFeedbackController::class, 'markReviewed'])->name('feedback.review');
 
         Route::resource('fertilizers', AdminFertilizerController::class)->except('show');

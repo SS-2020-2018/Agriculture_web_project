@@ -10,7 +10,6 @@ class StoreQuestionRequest extends FormRequest
     {
         return true;
     }
-
     /*
       @return array<string, mixed>
      */

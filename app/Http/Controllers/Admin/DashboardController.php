@@ -22,10 +22,9 @@ class DashboardController extends Controller
     public function __construct(private readonly WeatherService $weatherService)
     {
     }
-
-    /**
-     * The Admin Dashboard: summary stat cards (each clickable through to
-     * its management page) plus recent-activity feeds across the app.
+    /*
+      The Admin Dashboard: summary stat cards (each clickable through to
+     its management page) plus recent-activity feeds across the app.
      */
     public function index(): View
     {

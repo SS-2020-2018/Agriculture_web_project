@@ -262,9 +262,7 @@ class SearchController extends Controller
             ))->all();
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+  
     private function formatResult(string $title, ?string $description, string $url, string $icon, string $categoryLabel, $date): array
     {
         return [
